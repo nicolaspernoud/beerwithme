@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::models::brand_tests::brand_test;
+    use crate::models::{brand_tests::brand_test, item_tests::item_test};
     #[actix_rt::test]
     async fn test_models() {
         use diesel::r2d2::{self, ConnectionManager};
@@ -20,5 +20,6 @@ mod tests {
         )
         .expect("couldn't run migrations");
         brand_test(&pool).await;
+        item_test(&pool).await;
     }
 }

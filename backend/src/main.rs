@@ -8,10 +8,11 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 
-use actix_web::{middleware, App, HttpServer};
+use actix_web::HttpServer;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
 
+mod app;
 mod errors;
 mod models;
 mod schema;
@@ -19,8 +20,6 @@ mod schema;
 pub mod tester;
 #[cfg(test)]
 mod tests;
-
-use models::brand::{create, delete, delete_all, read, read_all, update};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -44,19 +43,8 @@ async fn main() -> std::io::Result<()> {
     println!("Starting server at: {}", &bind);
 
     // Start HTTP server
-    HttpServer::new(move || {
-        App::new()
-            // set up DB pool to be used with web::Data<Pool> extractor
-            .data(pool.clone())
-            .wrap(middleware::Logger::default())
-            .service(read_all)
-            .service(read)
-            .service(create)
-            .service(update)
-            .service(delete_all)
-            .service(delete)
-    })
-    .bind(&bind)?
-    .run()
-    .await
+    HttpServer::new(move || create_app!(pool))
+        .bind(&bind)?
+        .run()
+        .await
 }

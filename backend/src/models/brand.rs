@@ -39,9 +39,9 @@ impl NewBrand {
 }
 
 crud_use!();
-crud_create!(NewBrand, Brand, "/brand", brands);
-crud_read_all!(Brand, "/brand/all", brands);
-crud_read!(Brand, "/brand/{oid}", brands);
-crud_update!(Brand, "/brand/{oid}", brands);
-crud_delete!(Brand, "/brand/{oid}", brands);
-crud_delete_all!(Brand, "/brand/all", brands);
+crud_create!(NewBrand, Brand, brands,);
+crud_read_all!(Brand, brands);
+crud_read!(Brand, brands);
+crud_update!(Brand, brands,);
+crud_delete!(Brand, brands);
+crud_delete_all!(Brand, brands);

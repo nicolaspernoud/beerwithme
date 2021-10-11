@@ -1,3 +1,3 @@
 #!/bin/bash
-rm test.db
-diesel migration run --database-url=test.db --migration-dir=migrations
+rm db/db.sqlite
+diesel migration run --database-url=db/db.sqlite --migration-dir=db/migrations

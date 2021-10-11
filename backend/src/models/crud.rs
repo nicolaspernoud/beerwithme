@@ -10,8 +10,8 @@ macro_rules! crud_use {
 
 #[macro_export]
 macro_rules! crud_read {
-    ($model:ty, $uri:expr, $table:tt) => {
-        #[get($uri)]
+    ($model:ty, $table:tt) => {
+        #[get("/{oid}")]
         pub async fn read(
             pool: web::Data<DbPool>,
             oid: web::Path<i32>,
@@ -29,8 +29,8 @@ macro_rules! crud_read {
 
 #[macro_export]
 macro_rules! crud_read_all {
-    ($model:ty, $uri:expr, $table:tt) => {
-        #[get($uri)]
+    ($model:ty, $table:tt) => {
+        #[get("/all")]
         pub async fn read_all(pool: web::Data<DbPool>) -> Result<HttpResponse, ServerError> {
             let conn = pool.get()?;
             let object = web::block(move || {
@@ -45,14 +45,18 @@ macro_rules! crud_read_all {
 
 #[macro_export]
 macro_rules! crud_create {
-    ($inmodel:ty, $outmodel:ty, $uri:expr, $table:tt) => {
-        #[post($uri)]
+    ($inmodel:ty, $outmodel:ty, $table:tt, $( $parent_model:ty, $parent_table:tt, $parent_table_id:tt ),* ) => {
+        #[post("")]
         pub async fn create(
             pool: web::Data<DbPool>,
             o: web::Json<$inmodel>,
         ) -> Result<HttpResponse, ServerError> {
-            let conn = pool.get().expect("couldn't get db connection from pool");
+            let conn = pool.get()?;
             let created_o = web::block(move || {
+                $(
+                    // Check that parent for our object exists
+                    crate::schema::$parent_table::dsl::$parent_table.find(o.$parent_table_id).first::<$parent_model>(&conn)?;
+                )*
                 use crate::schema::$table::dsl::*;
                 diesel::insert_into($table)
                     .values(o.clone().trim())
@@ -68,16 +72,20 @@ macro_rules! crud_create {
 
 #[macro_export]
 macro_rules! crud_update {
-    ($model:ty, $uri:expr, $table:tt) => {
-        #[patch($uri)]
+    ($model:ty, $table:tt, $( $parent_model:ty, $parent_table:tt, $parent_table_id:tt ),*) => {
+        #[patch("/{oid}")]
         pub async fn update(
             pool: web::Data<DbPool>,
             o: web::Json<$model>,
             oid: web::Path<i32>,
         ) -> Result<HttpResponse, ServerError> {
-            let conn = pool.get().expect("couldn't get db connection from pool");
+            let conn = pool.get()?;
             let o_value = o.clone();
             let patched_o = web::block(move || {
+                $(
+                    // Check that parent for our object exists
+                    crate::schema::$parent_table::dsl::$parent_table.find(o.$parent_table_id).first::<$parent_model>(&conn)?;
+                )*
                 use crate::schema::$table::dsl::*;
                 diesel::update($table)
                     .filter(id.eq(oid.clone()))
@@ -93,13 +101,13 @@ macro_rules! crud_update {
 
 #[macro_export]
 macro_rules! crud_delete {
-    ($model:ty, $uri:expr, $table:tt) => {
-        #[delete($uri)]
+    ($model:ty, $table:tt) => {
+        #[delete("/{oid}")]
         pub async fn delete(
             pool: web::Data<DbPool>,
             oid: web::Path<i32>,
         ) -> Result<HttpResponse, ServerError> {
-            let conn = pool.get().expect("couldn't get db connection from pool");
+            let conn = pool.get()?;
             let id = *oid;
             web::block(move || {
                 use crate::schema::$table::dsl::*;
@@ -119,10 +127,10 @@ macro_rules! crud_delete {
 
 #[macro_export]
 macro_rules! crud_delete_all {
-    ($model:ty, $uri:expr, $table:tt) => {
-        #[delete($uri)]
+    ($model:ty, $table:tt) => {
+        #[delete("/all")]
         pub async fn delete_all(pool: web::Data<DbPool>) -> Result<HttpResponse, ServerError> {
-            let conn = pool.get().expect("couldn't get db connection from pool");
+            let conn = pool.get()?;
             web::block(move || {
                 use crate::schema::$table::dsl::*;
                 let deleted = diesel::delete($table).execute(&conn)?;

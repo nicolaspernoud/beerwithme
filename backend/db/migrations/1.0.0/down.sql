@@ -1,1 +1,3 @@
-DROP TABLE brand;
+DROP TABLE brands;
+
+DROP TABLE items;
