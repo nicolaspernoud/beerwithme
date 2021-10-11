@@ -7,9 +7,18 @@ table! {
 }
 
 table! {
+    categories (id) {
+        id -> Integer,
+        name -> Text,
+        description -> Text,
+    }
+}
+
+table! {
     items (id) {
         id -> Integer,
         brand_id -> Integer,
+        category_id -> Integer,
         name -> Text,
         description -> Text,
         time -> Timestamp,
@@ -17,8 +26,10 @@ table! {
 }
 
 joinable!(items -> brands (brand_id));
+joinable!(items -> categories (category_id));
 
 allow_tables_to_appear_in_same_query!(
     brands,
+    categories,
     items,
 );

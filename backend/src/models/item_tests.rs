@@ -15,7 +15,7 @@ pub async fn item_test(
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(
                 f,
-                "{{\"id\":{},\"brand_id\":{},\"name\":\"{}\",\"description\":\"{}\"}}",
+                "{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"{}\",\"description\":\"{}\"}}",
                 self.id, self.brand_id, self.name, self.description
             )
         }
@@ -26,7 +26,7 @@ pub async fn item_test(
         app,
         Method::POST,
         "/api/item",
-        "{\"brand_id\":1,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}",
+        "{\"brand_id\":1,\"category_id\":6,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}",
         StatusCode::NOT_FOUND,
         "Item not found"
     );
@@ -40,12 +40,22 @@ pub async fn item_test(
         "{\"id\""
     );
 
-    // Create a item with an existing brand
+    // Create a item with an non existing category
+    do_test!(
+            app,
+            Method::POST,
+            "/api/item",
+            &format!("{{\"brand_id\":{},\"category_id\":106,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}}",brand_id),
+            StatusCode::NOT_FOUND,
+            "Item not found"
+        );
+
+    // Create a item with an existing brand and category
     let id = do_test_extract_id!(
             app,
             Method::POST,
             "/api/item",
-            &format!("{{\"brand_id\":{},\"name\":\"  Test item  \",\"description\":\"    Test description       \"}}",brand_id),
+            &format!("{{\"brand_id\":{},\"category_id\":6,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}}",brand_id),
             StatusCode::OK,
             "{\"id\""
         );
@@ -58,7 +68,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            "{{\"id\":{},\"brand_id\":{},\"name\":\"Test item\",\"description\":\"Test description\",\"time\":",
+            "{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"Test item\",\"description\":\"Test description\",\"time\":",
             id, brand_id
         )
     );
@@ -81,12 +91,13 @@ pub async fn item_test(
         &crate::models::item::Item {
             id: id,
             brand_id: brand_id,
+            category_id: 6,
             name: String::from("   Patched name   "),
             description: String::from("   Patched description   "),
             time: chrono::Utc::now().naive_utc()
         },
         StatusCode::OK,
-        format!("{{\"id\":{},\"brand_id\":{},\"name\":\"Patched name\",\"description\":\"Patched description\"",id,brand_id)
+        format!("{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"Patched name\",\"description\":\"Patched description\"",id,brand_id)
     );
 
     // Delete the item
@@ -115,7 +126,7 @@ pub async fn item_test(
         Method::POST,
         "/api/item",
         &format!(
-            "{{\"brand_id\":{}, \"name\":\"01_name\",\"description\":\"01_description\"}}",
+            "{{\"brand_id\":{},\"category_id\":6, \"name\":\"01_name\",\"description\":\"01_description\"}}",
             brand_id
         ),
         StatusCode::OK,
@@ -126,7 +137,7 @@ pub async fn item_test(
         Method::POST,
         "/api/item",
         &format!(
-            "{{\"brand_id\":{}, \"name\":\"02_name\",\"description\":\"02_description\"}}",
+            "{{\"brand_id\":{},\"category_id\":6, \"name\":\"02_name\",\"description\":\"02_description\"}}",
             brand_id
         ),
         StatusCode::OK,
@@ -139,7 +150,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            "[{{\"id\":{},\"brand_id\":{},\"name\":\"01_name\",\"description\":\"01_description\"",
+            "[{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"01_name\",\"description\":\"01_description\"",
             id1, brand_id
         )
     );

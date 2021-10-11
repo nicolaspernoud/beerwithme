@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! create_app {
     ($pool:expr) => {{
-        use crate::models::{brand, item};
+        use crate::models::{brand, category, item};
         use actix_web::{error, middleware, web, App, HttpResponse};
         App::new()
             .data($pool.clone())
@@ -22,6 +22,15 @@ macro_rules! create_app {
                     .service(brand::update)
                     .service(brand::delete_all)
                     .service(brand::delete),
+            )
+            .service(
+                web::scope("/api/category")
+                    .service(category::read_all)
+                    .service(category::read)
+                    .service(category::create)
+                    .service(category::update)
+                    .service(category::delete_all)
+                    .service(category::delete),
             )
             .service(
                 web::scope("/api/item")

@@ -2,7 +2,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     crud_create, crud_delete, crud_delete_all, crud_read, crud_read_all, crud_update, crud_use,
-    errors::ServerError, models::brand::Brand, schema::items,
+    errors::ServerError,
+    models::{brand::Brand, category::Category},
+    schema::items,
 };
 
 macro_rules! trim {
@@ -31,6 +33,7 @@ macro_rules! trim {
 pub struct Item {
     pub id: i32,
     pub brand_id: i32,
+    pub category_id: i32,
     pub name: String,
     pub description: String,
     pub time: chrono::NaiveDateTime,
@@ -43,6 +46,7 @@ impl Item {
 #[table_name = "items"]
 pub struct NewItem {
     pub brand_id: i32,
+    pub category_id: i32,
     pub name: String,
     pub description: String,
 }
@@ -51,9 +55,28 @@ impl NewItem {
 }
 
 crud_use!();
-crud_create!(NewItem, Item, items, Brand, brands, brand_id);
+crud_create!(
+    NewItem,
+    Item,
+    items,
+    Brand,
+    brands,
+    brand_id,
+    Category,
+    categories,
+    category_id
+);
 crud_read_all!(Item, items);
 crud_read!(Item, items);
-crud_update!(Item, items, Brand, brands, brand_id);
+crud_update!(
+    Item,
+    items,
+    Brand,
+    brands,
+    brand_id,
+    Category,
+    categories,
+    category_id
+);
 crud_delete!(Item, items);
 crud_delete_all!(Item, items);
