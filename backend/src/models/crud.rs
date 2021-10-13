@@ -65,7 +65,7 @@ macro_rules! crud_create {
                 Ok(o)
             })
             .await?;
-            Ok(HttpResponse::Ok().json(created_o))
+            Ok(HttpResponse::Created().json(created_o))
         }
     };
 }

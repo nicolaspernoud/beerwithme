@@ -15,9 +15,9 @@ pub async fn brand_test(
     let id = do_test_extract_id!(
         app,
         Method::POST,
-        "/api/brand",
+        "/api/brands",
         "{\"name\":\"  Test brand  \",\"description\":\"    Test description       \"}",
-        StatusCode::OK,
+        StatusCode::CREATED,
         "{\"id\""
     );
 
@@ -25,7 +25,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::GET,
-        &format!("/api/brand/{}", id),
+        &format!("/api/brands/{}", id),
         "",
         StatusCode::OK,
         format!(
@@ -38,7 +38,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::GET,
-        &format!("/api/brand/{}", id + 1),
+        &format!("/api/brands/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
         "Item not found"
@@ -48,7 +48,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::PATCH,
-        &format!("/api/brand/{}", id),
+        &format!("/api/brands/{}", id),
         &format!("{{\"id\":{}, \"name\":\"  Patched test brand   \",\"description\":\"    Patched test description       \"}}",id),
         StatusCode::OK,
         "{\"id\""
@@ -58,7 +58,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::DELETE,
-        &format!("/api/brand/{}", id),
+        &format!("/api/brands/{}", id),
         "",
         StatusCode::OK,
         format!("Deleted object with id: {}", id)
@@ -68,7 +68,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::DELETE,
-        &format!("/api/brand/{}", id + 1),
+        &format!("/api/brands/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
         "Item not found"
@@ -76,7 +76,7 @@ pub async fn brand_test(
 
     // Delete all the brands
     let req = test::TestRequest::delete()
-        .uri("/api/brand/all")
+        .uri("/api/brands/all")
         .to_request();
     test::call_service(&mut app, req).await;
 
@@ -84,23 +84,23 @@ pub async fn brand_test(
     let id1 = do_test_extract_id!(
         app,
         Method::POST,
-        "/api/brand",
+        "/api/brands",
         "{\"name\":\"01_name\",\"description\":\"01_description\"}",
-        StatusCode::OK,
+        StatusCode::CREATED,
         "{\"id\""
     );
     let id2 = do_test_extract_id!(
         app,
         Method::POST,
-        "/api/brand",
+        "/api/brands",
         "{\"name\":\"02_name\",\"description\":\"02_description\"}",
-        StatusCode::OK,
+        StatusCode::CREATED,
         "{\"id\""
     );
     do_test!(
         app,
         Method::GET,
-        "/api/brand/all",
+        "/api/brands/all",
         "",
         StatusCode::OK,
         format!("[{{\"id\":{},\"name\":\"01_name\",\"description\":\"01_description\"}},{{\"id\":{},\"name\":\"02_name\",\"description\":\"02_description\"}}]", id1, id2)
@@ -110,7 +110,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::DELETE,
-        "/api/brand/all",
+        "/api/brands/all",
         "",
         StatusCode::OK,
         "Deleted all objects"

@@ -2,7 +2,9 @@
 macro_rules! create_app {
     ($pool:expr) => {{
         use crate::models::{brand, category, item};
+        use actix_cors::Cors;
         use actix_web::{error, middleware, web, App, HttpResponse};
+
         App::new()
             .data($pool.clone())
             .app_data(
@@ -13,9 +15,10 @@ macro_rules! create_app {
                             .into()
                     }),
             )
+            .wrap(Cors::permissive())
             .wrap(middleware::Logger::default())
             .service(
-                web::scope("/api/brand")
+                web::scope("/api/brands")
                     .service(brand::read_all)
                     .service(brand::read)
                     .service(brand::create)
@@ -24,7 +27,7 @@ macro_rules! create_app {
                     .service(brand::delete),
             )
             .service(
-                web::scope("/api/category")
+                web::scope("/api/categories")
                     .service(category::read_all)
                     .service(category::read)
                     .service(category::create)
@@ -33,7 +36,7 @@ macro_rules! create_app {
                     .service(category::delete),
             )
             .service(
-                web::scope("/api/item")
+                web::scope("/api/items")
                     .service(item::read_all)
                     .service(item::read)
                     .service(item::create)

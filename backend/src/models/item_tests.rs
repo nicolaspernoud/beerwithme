@@ -25,7 +25,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::POST,
-        "/api/item",
+        "/api/items",
         "{\"brand_id\":1,\"category_id\":6,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}",
         StatusCode::NOT_FOUND,
         "Item not found"
@@ -34,9 +34,9 @@ pub async fn item_test(
     let brand_id = do_test_extract_id!(
         app,
         Method::POST,
-        "/api/brand",
+        "/api/brands",
         "{\"name\":\"  Test brand  \",\"description\":\"    Test description       \"}",
-        StatusCode::OK,
+        StatusCode::CREATED,
         "{\"id\""
     );
 
@@ -44,7 +44,7 @@ pub async fn item_test(
     do_test!(
             app,
             Method::POST,
-            "/api/item",
+            "/api/items",
             &format!("{{\"brand_id\":{},\"category_id\":106,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}}",brand_id),
             StatusCode::NOT_FOUND,
             "Item not found"
@@ -54,9 +54,9 @@ pub async fn item_test(
     let id = do_test_extract_id!(
             app,
             Method::POST,
-            "/api/item",
+            "/api/items",
             &format!("{{\"brand_id\":{},\"category_id\":6,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}}",brand_id),
-            StatusCode::OK,
+            StatusCode::CREATED,
             "{\"id\""
         );
 
@@ -64,7 +64,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::GET,
-        &format!("/api/item/{}", id),
+        &format!("/api/items/{}", id),
         "",
         StatusCode::OK,
         format!(
@@ -77,7 +77,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::GET,
-        &format!("/api/item/{}", id + 1),
+        &format!("/api/items/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
         "Item not found"
@@ -87,7 +87,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::PATCH,
-        &format!("/api/item/{}", id),
+        &format!("/api/items/{}", id),
         &crate::models::item::Item {
             id: id,
             brand_id: brand_id,
@@ -104,7 +104,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::DELETE,
-        &format!("/api/item/{}", id),
+        &format!("/api/items/{}", id),
         "",
         StatusCode::OK,
         format!("Deleted object with id: {}", id)
@@ -114,7 +114,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::DELETE,
-        &format!("/api/item/{}", id + 1),
+        &format!("/api/items/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
         "Item not found"
@@ -124,29 +124,29 @@ pub async fn item_test(
     let id1 = do_test_extract_id!(
         app,
         Method::POST,
-        "/api/item",
+        "/api/items",
         &format!(
             "{{\"brand_id\":{},\"category_id\":6, \"name\":\"01_name\",\"description\":\"01_description\"}}",
             brand_id
         ),
-        StatusCode::OK,
+        StatusCode::CREATED,
         "{\"id\""
     );
     do_test!(
         app,
         Method::POST,
-        "/api/item",
+        "/api/items",
         &format!(
             "{{\"brand_id\":{},\"category_id\":6, \"name\":\"02_name\",\"description\":\"02_description\"}}",
             brand_id
         ),
-        StatusCode::OK,
+        StatusCode::CREATED,
         "{\"id\""
     );
     do_test!(
         app,
         Method::GET,
-        "/api/item/all",
+        "/api/items/all",
         "",
         StatusCode::OK,
         format!(
@@ -159,7 +159,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::DELETE,
-        "/api/item/all",
+        "/api/items/all",
         "",
         StatusCode::OK,
         "Deleted all objects"
