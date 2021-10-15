@@ -25,7 +25,8 @@ class Item extends Serialisable with EquatableMixin {
       'category_id': category_id,
       'brand_id': brand_id,
       'name': name,
-      'description': description
+      'description': description,
+      'time': time.toIso8601String(),
     };
   }
 

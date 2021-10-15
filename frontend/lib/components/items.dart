@@ -3,7 +3,6 @@ import 'package:frontend/models/brand.dart';
 import 'package:frontend/models/category.dart';
 import 'package:frontend/models/crud.dart';
 import 'package:frontend/models/item.dart';
-import 'package:http/http.dart' as http;
 
 import '../globals.dart';
 import '../i18n.dart';
@@ -24,7 +23,7 @@ class Items extends StatefulWidget {
 
 class _ItemsState extends State<Items> {
   late Future<List<Item>> items;
-  bool _showClosed = false;
+  String filter = "";
 
   @override
   void initState() {
@@ -109,7 +108,8 @@ class _ItemsState extends State<Items> {
                   builder: (context, snapshot) {
                     Widget child;
                     if (snapshot.hasData) {
-                      var ts = snapshot.data!;
+                      var ts = snapshot.data!
+                          .where((element) => element.name.contains(filter));
                       child = RefreshIndicator(
                         color: Colors.amberAccent,
                         onRefresh: () {
@@ -129,11 +129,8 @@ class _ItemsState extends State<Items> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   ListTile(
-                                      leading: Icon(Icons.assignment_turned_in),
-                                      title: Text(
-                                          formatTime(ts.elementAt(i).time) +
-                                              " - " +
-                                              ts.elementAt(i).name),
+                                      leading: Icon(Icons.sports_bar),
+                                      title: Text(ts.elementAt(i).name),
                                       subtitle: Text(
                                         ts.elementAt(i).description,
                                         maxLines: 2,
@@ -186,12 +183,19 @@ class _ItemsState extends State<Items> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text(MyLocalizations.of(context)!.tr("show_closed")),
-                  Switch(
-                    onChanged: (bool val) {
-                      setState(() => _showClosed = val);
-                    },
-                    value: _showClosed,
+                  Icon(Icons.search),
+                  SizedBox(
+                    width: 200,
+                    child: TextFormField(
+                      initialValue: "",
+                      decoration: new InputDecoration(
+                          labelText: MyLocalizations.of(context)!.tr("search")),
+                      // The validator receives the text that the user has entered.
+                      onChanged: (value) {
+                        filter = value;
+                        setState(() {});
+                      },
+                    ),
                   ),
                 ],
               ),

@@ -63,7 +63,7 @@ class _SettingsState extends State<Settings> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         ListTile(
-                                          leading: Icon(Icons.apartment),
+                                          leading: Icon(Icons.label),
                                           title: Text(a.name),
                                           subtitle: Text(a.description),
                                         ),

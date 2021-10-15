@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -110,19 +109,6 @@ class _NewEditItemState extends State<NewEditItem> {
     }
   }
 
-  // Time selector
-  Future<void> _selectTime() async {
-    final date = await showDatePicker(
-        context: context,
-        initialDate: widget.item.time,
-        firstDate: DateTime(2014),
-        lastDate: DateTime.now().add(Duration(days: 30)));
-    if (date != null)
-      setState(() {
-        widget.item.time = date;
-      });
-  }
-
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -153,14 +139,7 @@ class _NewEditItemState extends State<NewEditItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                OutlinedButton(
-                    onPressed: () async {
-                      await _selectTime();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(formatTime(widget.item.time)),
-                    )),
+                Text(formatTime(widget.item.time)),
                 SizedBox(height: 10),
                 TextFormField(
                   maxLength: 75,

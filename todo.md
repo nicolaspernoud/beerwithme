@@ -4,10 +4,11 @@
 
 [ ] Auth
 [ ] Logging
+[ ] Photos
 
 ## Frontend
 
-[ ] Create the app
+[ ] Basic tests
 
 ## Integration
 
