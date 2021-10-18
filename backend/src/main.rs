@@ -8,9 +8,13 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 
+use std::env;
+
 use actix_web::HttpServer;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
+
+use crate::app::AppConfig;
 
 mod app;
 mod errors;
@@ -20,10 +24,14 @@ mod schema;
 pub mod tester;
 #[cfg(test)]
 mod tests;
+mod utils;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "actix_web=info");
+    if let Err(_) = env::var("RUST_LOG") {
+        env::set_var("RUST_LOG", "info");
+    }
+
     env_logger::init();
 
     // set up database connection pool
@@ -38,12 +46,19 @@ async fn main() -> std::io::Result<()> {
     )
     .expect("couldn't run migrations");
 
+    // Set up authorization token
+    let app_config = AppConfig::new(env::var("TOKEN").unwrap_or_else(|_| -> String {
+        let token = crate::utils::random_string();
+        println!("Authorization token: {}", token);
+        token
+    }));
+
     let bind = "127.0.0.1:8080";
 
     println!("Starting server at: {}", &bind);
 
     // Start HTTP server
-    HttpServer::new(move || create_app!(pool))
+    HttpServer::new(move || create_app!(pool, app_config.clone()))
         .bind(&bind)?
         .run()
         .await

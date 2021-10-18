@@ -35,7 +35,7 @@ macro_rules! crud_read_all {
             let conn = pool.get()?;
             let object = web::block(move || {
                 use crate::schema::$table::dsl::*;
-                $table.load::<$model>(&conn)
+                $table.order(name.asc()).load::<$model>(&conn)
             })
             .await?;
             Ok(HttpResponse::Ok().json(object))

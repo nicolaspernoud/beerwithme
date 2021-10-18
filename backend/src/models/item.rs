@@ -94,12 +94,13 @@ pub async fn read_filter(
             object = web::block(move || {
                 items
                     .filter(name.like(format!("%{}%", p.name)))
+                    .order(name.asc())
                     .load::<Item>(&conn)
             })
             .await?;
         }
         Err(_) => {
-            object = web::block(move || items.load::<Item>(&conn)).await?;
+            object = web::block(move || items.order(name.asc()).load::<Item>(&conn)).await?;
         }
     }
     Ok(HttpResponse::Ok().json(object))

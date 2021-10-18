@@ -85,7 +85,7 @@ class _NewEditItemState extends State<NewEditItem> {
       }
       final response = await http.post(
           Uri.parse('$hostname/items/photos/${id.toString()}'),
-          headers: <String, String>{'X-TOKEN': token},
+          headers: <String, String>{'Authorization': "Bearer " + token},
           body: img);
       if (response.statusCode != 200) {
         throw Exception(response.body.toString());
@@ -93,7 +93,7 @@ class _NewEditItemState extends State<NewEditItem> {
     } else {
       await http.delete(
         Uri.parse('$hostname/items/photos/${id.toString()}'),
-        headers: <String, String>{'X-TOKEN': token},
+        headers: <String, String>{'Authorization': "Bearer " + token},
       );
     }
   }
@@ -101,7 +101,7 @@ class _NewEditItemState extends State<NewEditItem> {
   _imgFromServer(int id) async {
     final response = await http.get(
       Uri.parse('$hostname/items/photos/${id.toString()}'),
-      headers: <String, String>{'X-TOKEN': token},
+      headers: <String, String>{'Authorization': "Bearer " + token},
     );
     if (response.statusCode == 200) {
       imageBytes = Future.value(response.bodyBytes);

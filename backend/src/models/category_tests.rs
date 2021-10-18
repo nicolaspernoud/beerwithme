@@ -1,7 +1,8 @@
-use crate::create_app;
+use crate::{app::AppConfig, create_app};
 
 pub async fn category_test(
     pool: &r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::SqliteConnection>>,
+    app_config: AppConfig,
 ) {
     use crate::do_test;
     use actix_web::{
@@ -9,7 +10,7 @@ pub async fn category_test(
         test,
     };
 
-    let mut app = test::init_service(create_app!(pool)).await;
+    let mut app = test::init_service(create_app!(pool, app_config)).await;
 
     // Get default categories
     do_test!(
@@ -18,6 +19,6 @@ pub async fn category_test(
         "/api/categories",
         "",
         StatusCode::OK,
-        r#"[{"id":1,"name":"Pale Lager & Pilsner""#
+        r#"[{"id":9,"name":"Belgian Style","#
     );
 }

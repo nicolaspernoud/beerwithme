@@ -14,6 +14,7 @@ macro_rules! do_test {
             .method($method)
             .set_payload(serialized)
             .header("content-type", "application/json")
+            .header("Authorization", "Bearer 0101")
             .to_request();
         let resp = test::call_service(&mut $app, req).await;
         assert_eq!(resp.status(), $expected_status_code);

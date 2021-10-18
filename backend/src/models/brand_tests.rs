@@ -1,7 +1,8 @@
-use crate::create_app;
+use crate::{app::AppConfig, create_app};
 
 pub async fn brand_test(
     pool: &r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::SqliteConnection>>,
+    app_config: AppConfig,
 ) {
     use crate::{do_test, do_test_extract_id};
     use actix_web::{
@@ -9,7 +10,7 @@ pub async fn brand_test(
         test,
     };
 
-    let mut app = test::init_service(create_app!(pool)).await;
+    let mut app = test::init_service(create_app!(pool, app_config)).await;
 
     // Create a brand
     let id = do_test_extract_id!(
@@ -75,7 +76,10 @@ pub async fn brand_test(
     );
 
     // Delete all the brands
-    let req = test::TestRequest::delete().uri("/api/brands").to_request();
+    let req = test::TestRequest::delete()
+        .header("Authorization", "Bearer 0101")
+        .uri("/api/brands")
+        .to_request();
     test::call_service(&mut app, req).await;
 
     // Create two brands and get them all

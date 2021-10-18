@@ -2,8 +2,8 @@
 
 ## Backend
 
-[ ] Auth
-[ ] Logging
+[x] Auth
+[x] Logging
 [x] Photos
 [x] Filter
 [ ] Marks
@@ -11,7 +11,7 @@
 
 ## Frontend
 
-[ ] Basic tests
+[/] Basic tests
 [x] Filter
 [ ] Marks
 [ ] Correct code smells

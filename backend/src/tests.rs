@@ -1,13 +1,14 @@
 #[cfg(test)]
 mod tests {
-    use crate::models::{
-        brand_tests::brand_test, category_tests::category_test, item_tests::item_test,
+    use crate::{
+        app::AppConfig,
+        models::{brand_tests::brand_test, category_tests::category_test, item_tests::item_test},
     };
     #[actix_rt::test]
     async fn test_models() {
         use diesel::r2d2::{self, ConnectionManager};
         use diesel::SqliteConnection;
-        std::env::set_var("RUST_LOG", "actix_web=info");
+        std::env::set_var("RUST_LOG", "debug");
         env_logger::init();
 
         // set up database connection pool
@@ -21,8 +22,12 @@ mod tests {
             &mut std::io::stdout(),
         )
         .expect("couldn't run migrations");
-        brand_test(&pool).await;
-        category_test(&pool).await;
-        item_test(&pool).await;
+
+        // Set up authorization token
+        let app_config = AppConfig::new("0101".to_string());
+
+        brand_test(&pool, app_config.clone()).await;
+        category_test(&pool, app_config.clone()).await;
+        item_test(&pool, app_config.clone()).await;
     }
 }

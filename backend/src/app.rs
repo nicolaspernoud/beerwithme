@@ -1,9 +1,43 @@
+use std::sync::Arc;
+
+use actix_web::error::{self};
+use actix_web::{dev::ServiceRequest, Error};
+use actix_web_httpauth::extractors::bearer::BearerAuth;
+
+#[derive(Clone)]
+pub struct AppConfig {
+    bearer_token: Arc<String>,
+}
+
+impl AppConfig {
+    pub fn new(token: String) -> Self {
+        AppConfig {
+            bearer_token: Arc::new(token),
+        }
+    }
+}
+
+pub async fn validator(
+    req: ServiceRequest,
+    credentials: BearerAuth,
+) -> Result<ServiceRequest, Error> {
+    let app_config = req
+        .app_data::<AppConfig>()
+        .expect("Could not get token configuration");
+    if *app_config.bearer_token == credentials.token() {
+        Ok(req)
+    } else {
+        Err(error::ErrorUnauthorized("Wrong token!"))
+    }
+}
+
 #[macro_export]
 macro_rules! create_app {
-    ($pool:expr) => {{
+    ($pool:expr, $app_config:expr) => {{
         use crate::models::{brand, category, item};
         use actix_cors::Cors;
         use actix_web::{error, middleware, web, App, HttpResponse};
+        use actix_web_httpauth::middleware::HttpAuthentication;
 
         App::new()
             .data($pool.clone())
@@ -15,6 +49,8 @@ macro_rules! create_app {
                             .into()
                     }),
             )
+            .app_data($app_config)
+            .wrap(HttpAuthentication::bearer(crate::app::validator))
             .wrap(Cors::permissive())
             .wrap(middleware::Logger::default())
             .service(

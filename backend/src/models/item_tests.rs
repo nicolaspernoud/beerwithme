@@ -1,7 +1,8 @@
-use crate::create_app;
+use crate::{app::AppConfig, create_app};
 
 pub async fn item_test(
     pool: &r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::SqliteConnection>>,
+    app_config: AppConfig,
 ) {
     use crate::{do_test, do_test_extract_id};
     use actix_web::{
@@ -9,7 +10,7 @@ pub async fn item_test(
         test,
     };
 
-    let mut app = test::init_service(create_app!(pool)).await;
+    let mut app = test::init_service(create_app!(pool, app_config)).await;
 
     impl std::fmt::Display for crate::models::item::Item {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -20,6 +21,16 @@ pub async fn item_test(
             )
         }
     }
+
+    // Check that using the wrong token gives an unauthorized error
+    let req = test::TestRequest::with_uri("/api/items")
+        .method(Method::GET)
+        .header("Authorization", "Bearer 0102")
+        .to_request();
+    use actix_web::dev::Service;
+    let resp = app.call(req).await;
+    assert!(resp.is_err());
+    assert!(resp.err().unwrap().to_string() == "Wrong token!");
 
     // Create a item with a non existing brand
     do_test!(
@@ -197,6 +208,7 @@ pub async fn item_test(
     let img_body = std::fs::read("test_img.jpg").unwrap();
     let req = test::TestRequest::with_uri(format!("/api/items/photos/{}", id).as_str())
         .method(Method::POST)
+        .header("Authorization", "Bearer 0101")
         .set_payload(img_body.clone())
         .to_request();
     let resp = test::call_service(&mut app, req).await;
@@ -205,6 +217,7 @@ pub async fn item_test(
     // Retrieve the photo
     let req = test::TestRequest::with_uri(format!("/api/items/photos/{}", id).as_str())
         .method(Method::GET)
+        .header("Authorization", "Bearer 0101")
         .to_request();
     let resp = test::call_service(&mut app, req).await;
     assert_eq!(resp.status(), StatusCode::OK);
@@ -224,6 +237,7 @@ pub async fn item_test(
     // Check that the photo is gone too
     let req = test::TestRequest::with_uri(format!("/api/items/photos/{}", id).as_str())
         .method(Method::GET)
+        .header("Authorization", "Bearer 0101")
         .to_request();
     let resp = test::call_service(&mut app, req).await;
     assert_eq!(resp.status(), StatusCode::NOT_FOUND);
