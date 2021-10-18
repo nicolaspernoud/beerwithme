@@ -4,7 +4,7 @@
 
 [ ] Auth
 [ ] Logging
-[ ] Photos
+[x] Photos
 [x] Filter
 [ ] Marks
 [ ] Correct code smells

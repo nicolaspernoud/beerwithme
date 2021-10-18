@@ -175,4 +175,56 @@ pub async fn item_test(
         StatusCode::OK,
         "Deleted all objects"
     );
+
+    //////////////////
+    // PHOTOS TESTS //
+    //////////////////
+
+    // Create an item
+    let id = do_test_extract_id!(
+        app,
+        Method::POST,
+        "/api/items",
+        &format!(
+            "{{\"brand_id\":{},\"category_id\":6, \"name\":\"01_name\",\"description\":\"01_description\"}}",
+            brand_id
+        ),
+        StatusCode::CREATED,
+        "{\"id\""
+    );
+
+    // Upload a photo for this item
+    let img_body = std::fs::read("test_img.jpg").unwrap();
+    let req = test::TestRequest::with_uri(format!("/api/items/photos/{}", id).as_str())
+        .method(Method::POST)
+        .set_payload(img_body.clone())
+        .to_request();
+    let resp = test::call_service(&mut app, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Retrieve the photo
+    let req = test::TestRequest::with_uri(format!("/api/items/photos/{}", id).as_str())
+        .method(Method::GET)
+        .to_request();
+    let resp = test::call_service(&mut app, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+    let body = test::read_body(resp).await;
+    assert_eq!(body, img_body);
+
+    // Delete the item
+    do_test!(
+        app,
+        Method::DELETE,
+        &format!("/api/items/{}", id),
+        "",
+        StatusCode::OK,
+        format!("Deleted object with id: {}", id)
+    );
+
+    // Check that the photo is gone too
+    let req = test::TestRequest::with_uri(format!("/api/items/photos/{}", id).as_str())
+        .method(Method::GET)
+        .to_request();
+    let resp = test::call_service(&mut app, req).await;
+    assert_eq!(resp.status(), StatusCode::NOT_FOUND);
 }

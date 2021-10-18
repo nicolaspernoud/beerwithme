@@ -1,6 +1,8 @@
 use actix_web::error::BlockingError;
+use actix_web::error::PayloadError;
 use actix_web::error::ResponseError;
 use actix_web::HttpResponse;
+use image::ImageError;
 
 #[derive(Debug)]
 pub enum ServerError {
@@ -8,6 +10,7 @@ pub enum ServerError {
     DieselError,
     DieselNotFoundError,
     BlockingCanceledError,
+    ImageError,
 }
 
 impl std::fmt::Display for ServerError {
@@ -17,6 +20,7 @@ impl std::fmt::Display for ServerError {
             ServerError::DieselError => write!(f, "Diesel error"),
             ServerError::DieselNotFoundError => write!(f, "Item not found"),
             ServerError::BlockingCanceledError => write!(f, "Blocking error"),
+            ServerError::ImageError => write!(f, "Image error"),
         }
     }
 }
@@ -32,6 +36,7 @@ impl ResponseError for ServerError {
             ServerError::BlockingCanceledError => {
                 HttpResponse::InternalServerError().body("Blocking error")
             }
+            ServerError::ImageError => HttpResponse::InternalServerError().body("Image error"),
         }
     }
 }
@@ -60,5 +65,35 @@ impl From<BlockingError<diesel::result::Error>> for ServerError {
             },
             BlockingError::Canceled => ServerError::BlockingCanceledError,
         }
+    }
+}
+
+impl From<std::io::Error> for ServerError {
+    fn from(_err: std::io::Error) -> ServerError {
+        ServerError::ImageError
+    }
+}
+
+impl From<PayloadError> for ServerError {
+    fn from(_err: PayloadError) -> ServerError {
+        ServerError::ImageError
+    }
+}
+
+impl From<BlockingError<ImageError>> for ServerError {
+    fn from(_err: BlockingError<ImageError>) -> ServerError {
+        ServerError::ImageError
+    }
+}
+
+impl From<ImageError> for ServerError {
+    fn from(_err: ImageError) -> ServerError {
+        ServerError::ImageError
+    }
+}
+
+impl From<BlockingError<std::io::Error>> for ServerError {
+    fn from(_err: BlockingError<std::io::Error>) -> ServerError {
+        ServerError::ImageError
     }
 }

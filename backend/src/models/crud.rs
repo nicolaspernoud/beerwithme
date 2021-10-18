@@ -52,7 +52,7 @@ macro_rules! crud_create {
             o: web::Json<$inmodel>,
         ) -> Result<HttpResponse, ServerError> {
             let conn = pool.get()?;
-            let created_o = web::block(move || {
+            let created_o = web::block::<_,_,diesel::result::Error>(move || {
                 $(
                     // Check that parent for our object exists
                     crate::schema::$parent_table::dsl::$parent_table.find(o.$parent_table_id).first::<$parent_model>(&conn)?;
@@ -108,19 +108,17 @@ macro_rules! crud_delete {
             oid: web::Path<i32>,
         ) -> Result<HttpResponse, ServerError> {
             let conn = pool.get()?;
-            let id = *oid;
+            let oid = *oid;
             web::block(move || {
                 use crate::schema::$table::dsl::*;
-                let deleted = diesel::delete($table)
-                    .filter(id.eq(oid.clone()))
-                    .execute(&conn)?;
+                let deleted = diesel::delete($table).filter(id.eq(oid)).execute(&conn)?;
                 match deleted {
                     0 => Err(diesel::result::Error::NotFound),
                     _ => Ok(deleted),
                 }
             })
             .await?;
-            Ok(HttpResponse::Ok().body(format!("Deleted object with id: {}", id)))
+            Ok(HttpResponse::Ok().body(format!("Deleted object with id: {}", oid)))
         }
     };
 }

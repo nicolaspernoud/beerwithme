@@ -42,7 +42,10 @@ macro_rules! create_app {
                     .service(item::create)
                     .service(item::update)
                     .service(item::delete_all)
-                    .service(item::delete),
+                    .service(item::delete)
+                    .service(item::upload_photo)
+                    .service(item::retrieve_photo)
+                    .service(item::delete_photo),
             )
     }};
 }

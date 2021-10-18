@@ -1,8 +1,15 @@
-use actix_web::HttpRequest;
+use actix_files::NamedFile;
+
+use actix_web::{HttpRequest, Result};
+use futures_util::StreamExt;
+use image::GenericImageView;
+use std::fs::{self};
+
+use image::imageops::FilterType::Lanczos3;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    crud_create, crud_delete, crud_delete_all, crud_read, crud_update, crud_use,
+    crud_create, crud_delete_all, crud_read, crud_update, crud_use,
     errors::ServerError,
     models::{brand::Brand, category::Category},
     schema::items,
@@ -109,5 +116,69 @@ crud_update!(
     categories,
     category_id
 );
-crud_delete!(Item, items);
 crud_delete_all!(Item, items);
+
+#[delete("/{oid}")]
+pub async fn delete(
+    pool: web::Data<DbPool>,
+    oid: web::Path<i32>,
+) -> Result<HttpResponse, ServerError> {
+    let conn = pool.get()?;
+    let oid = *oid;
+    web::block(move || {
+        use crate::schema::items::dsl::*;
+        let deleted = diesel::delete(items).filter(id.eq(oid)).execute(&conn)?;
+        match deleted {
+            0 => Err(diesel::result::Error::NotFound),
+            _ => Ok(deleted),
+        }
+    })
+    .await?;
+    let _ = web::block(move || fs::remove_file(photo_filename(oid))).await;
+    Ok(HttpResponse::Ok().body(format!("Deleted object with id: {}", oid)))
+}
+
+///////////////////////
+// PHOTOS MANAGEMENT //
+///////////////////////
+
+const PHOTOS_PATH: &str = "data/items/photos";
+
+#[post("/photos/{oid}")]
+async fn upload_photo(
+    oid: web::Path<i32>,
+    mut body: web::Payload,
+) -> Result<HttpResponse, ServerError> {
+    fs::create_dir_all(PHOTOS_PATH)?;
+    let filename = photo_filename(*oid);
+    let mut bytes = web::BytesMut::new();
+    while let Some(item) = body.next().await {
+        bytes.extend_from_slice(&item?);
+    }
+    let r = web::block(move || image::load_from_memory(&bytes)).await?;
+    r.resize(
+        std::cmp::min(1280, r.dimensions().0),
+        std::cmp::min(1280, r.dimensions().1),
+        Lanczos3,
+    )
+    .save_with_format(
+        &filename,
+        image::ImageFormat::from_extension("jpg").unwrap(),
+    )?;
+    Ok(HttpResponse::Ok().body(filename))
+}
+
+#[get("/photos/{oid}")]
+async fn retrieve_photo(oid: web::Path<i32>) -> Result<NamedFile> {
+    Ok(NamedFile::open(photo_filename(*oid))?)
+}
+
+#[delete("/photos/{oid}")]
+async fn delete_photo(oid: web::Path<i32>) -> Result<HttpResponse, ServerError> {
+    web::block(move || fs::remove_file(photo_filename(*oid))).await?;
+    Ok(HttpResponse::Ok().body("File deleted"))
+}
+
+fn photo_filename(id: i32) -> String {
+    format!("{path}/{id}.jpg", path = PHOTOS_PATH, id = id)
+}
