@@ -21,7 +21,7 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     super.initState();
-    categories = widget.crud.ReadAll();
+    categories = widget.crud.Read();
   }
 
   @override
@@ -103,7 +103,7 @@ class _SettingsState extends State<Settings> {
       return NewEditCategory(crud: APICrud<Category>(), category: c);
     }));
     setState(() {
-      categories = widget.crud.ReadAll();
+      categories = widget.crud.Read();
     });
   }
 }

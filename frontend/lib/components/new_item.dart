@@ -50,7 +50,7 @@ class _NewEditItemState extends State<NewEditItem> {
     super.initState();
     isExisting = widget.item.id > 0;
     if (isExisting) {
-      itemWithComments = widget.crud.Read(widget.item.id);
+      itemWithComments = widget.crud.ReadOne(widget.item.id);
       _imgFromServer(widget.item.id);
     } else {
       itemWithComments = Future<Item>.value(widget.item);
@@ -315,7 +315,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
   @override
   void initState() {
     super.initState();
-    categories = widget.crud.ReadAll();
+    categories = widget.crud.Read();
     _index = widget.initialIndex;
   }
 
@@ -395,7 +395,7 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
   @override
   void initState() {
     super.initState();
-    brands = widget.crud.ReadAll();
+    brands = widget.crud.Read();
     _index = widget.initialIndex;
   }
 
@@ -472,7 +472,7 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
       return NewEditBrand(crud: APICrud<Brand>(), brand: c);
     }));
     setState(() {
-      brands = widget.crud.ReadAll();
+      brands = widget.crud.Read();
     });
   }
 }

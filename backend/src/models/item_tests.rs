@@ -132,7 +132,7 @@ pub async fn item_test(
         StatusCode::CREATED,
         "{\"id\""
     );
-    do_test!(
+    let id2 = do_test_extract_id!(
         app,
         Method::POST,
         "/api/items",
@@ -146,7 +146,7 @@ pub async fn item_test(
     do_test!(
         app,
         Method::GET,
-        "/api/items/all",
+        "/api/items",
         "",
         StatusCode::OK,
         format!(
@@ -154,12 +154,23 @@ pub async fn item_test(
             id1, brand_id
         )
     );
+    do_test!(
+        app,
+        Method::GET,
+        "/api/items?name=02",
+        "",
+        StatusCode::OK,
+        format!(
+            "[{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"02_name\",\"description\":\"02_description\"",
+            id2, brand_id
+        )
+    );
 
     // Delete all the items
     do_test!(
         app,
         Method::DELETE,
-        "/api/items/all",
+        "/api/items",
         "",
         StatusCode::OK,
         "Deleted all objects"

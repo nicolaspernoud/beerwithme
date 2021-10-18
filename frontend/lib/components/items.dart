@@ -3,6 +3,7 @@ import 'package:frontend/models/brand.dart';
 import 'package:frontend/models/category.dart';
 import 'package:frontend/models/crud.dart';
 import 'package:frontend/models/item.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 
 import '../globals.dart';
 import '../i18n.dart';
@@ -29,7 +30,7 @@ class _ItemsState extends State<Items> {
   void initState() {
     super.initState();
     if (App().hasToken) {
-      items = widget.crud.ReadAll();
+      items = widget.crud.Read();
     } else {
       WidgetsBinding.instance?.addPostFrameCallback(openSettings);
     }
@@ -60,7 +61,7 @@ class _ItemsState extends State<Items> {
 
   void hasRoleOrOpenSettings(_) {
     if (App().hasToken) {
-      items = widget.crud.ReadAll();
+      items = widget.crud.Read();
     } else {
       openSettings(_);
     }
@@ -108,40 +109,31 @@ class _ItemsState extends State<Items> {
                   builder: (context, snapshot) {
                     Widget child;
                     if (snapshot.hasData) {
-                      var ts = snapshot.data!
-                          .where((element) => element.name.contains(filter));
-                      child = RefreshIndicator(
-                        color: Colors.amberAccent,
-                        onRefresh: () {
-                          items = widget.crud.ReadAll();
-                          setState(() {});
-                          return items;
+                      var itms = snapshot.data!;
+                      child = ListView.builder(
+                        itemBuilder: (ctx, i) {
+                          return Card(
+                              child: InkWell(
+                            splashColor: Colors.amber.withAlpha(30),
+                            onTap: () {
+                              _edit(itms.elementAt(i));
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                    leading: Icon(Icons.sports_bar),
+                                    title: Text(itms.elementAt(i).name),
+                                    subtitle: Text(
+                                      itms.elementAt(i).description,
+                                      maxLines: 2,
+                                    ))
+                              ],
+                            ),
+                          ));
                         },
-                        child: ListView.builder(
-                          itemBuilder: (ctx, i) {
-                            return Card(
-                                child: InkWell(
-                              splashColor: Colors.amber.withAlpha(30),
-                              onTap: () {
-                                _edit(ts.elementAt(i));
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                      leading: Icon(Icons.sports_bar),
-                                      title: Text(ts.elementAt(i).name),
-                                      subtitle: Text(
-                                        ts.elementAt(i).description,
-                                        maxLines: 2,
-                                      ))
-                                ],
-                              ),
-                            ));
-                          },
-                          itemCount: ts.length,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                        ),
+                        itemCount: itms.length,
+                        physics: const AlwaysScrollableScrollPhysics(),
                       );
                     } else if (snapshot.hasError) {
                       child = Text(
@@ -187,15 +179,20 @@ class _ItemsState extends State<Items> {
                   SizedBox(
                     width: 200,
                     child: TextFormField(
-                      initialValue: "",
-                      decoration: new InputDecoration(
-                          labelText: MyLocalizations.of(context)!.tr("search")),
-                      // The validator receives the text that the user has entered.
-                      onChanged: (value) {
-                        filter = value;
-                        setState(() {});
-                      },
-                    ),
+                        initialValue: "",
+                        decoration: new InputDecoration(
+                            labelText:
+                                MyLocalizations.of(context)!.tr("search")),
+                        // The validator receives the text that the user has entered.
+                        onChanged: (value) {
+                          filter = value;
+                          EasyDebounce.debounce(
+                              'read-items-filter', Duration(milliseconds: 250),
+                              () {
+                            items = widget.crud.Read("name=" + filter);
+                            setState(() {});
+                          });
+                        }),
                   ),
                 ],
               ),
@@ -213,9 +210,8 @@ class _ItemsState extends State<Items> {
           brandsCrud: APICrud<Brand>(),
           item: t);
     }));
-    setState(() {
-      items = widget.crud.ReadAll();
-    });
+    items = widget.crud.Read("name=" + filter);
+    setState(() {});
   }
 }
 

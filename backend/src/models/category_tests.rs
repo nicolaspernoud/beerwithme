@@ -15,7 +15,7 @@ pub async fn category_test(
     do_test!(
         app,
         Method::GET,
-        "/api/categories/all",
+        "/api/categories",
         "",
         StatusCode::OK,
         r#"[{"id":1,"name":"Pale Lager & Pilsner""#

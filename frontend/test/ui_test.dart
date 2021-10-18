@@ -13,7 +13,7 @@ Future<void> main() async {
     // Build our app and trigger a frame
     await tester.pumpWidget(
       MaterialApp(
-        home: MyHomePage(title: 'Tiny Tickets'),
+        home: MyHomePage(title: 'Beer with me!'),
         localizationsDelegates: [
           const MyLocalizationsDelegate(),
         ],
@@ -21,16 +21,16 @@ Future<void> main() async {
     );
 
     // Check that the app title is displayed
-    expect(find.text('Tiny Tickets'), findsOneWidget);
+    expect(find.text('Beer with me!'), findsOneWidget);
     await tester.pump();
     // Check that we do not display the ticket list on startup if a user token is not set
-    expect(find.text("2021-08-12 - MyTicket"), findsNothing);
+    expect(find.text("01_name"), findsNothing);
     // Enter a user token
-    await tester.enterText(find.byKey(Key("tokenField")), '\$USER\$user');
+    await tester.enterText(find.byKey(Key("tokenField")), 'a_token');
     await tester.tap(find.text("OK"));
     await tester.pumpAndSettle();
     // Check that we display the ticket list if a user token is set
-    expect(find.text("2021-08-12 - MyTicket"), findsOneWidget);
+    expect(find.text("01_name"), findsOneWidget);
 
     // To print the widget tree :
     //debugDumpApp();

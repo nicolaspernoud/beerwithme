@@ -75,9 +75,7 @@ pub async fn brand_test(
     );
 
     // Delete all the brands
-    let req = test::TestRequest::delete()
-        .uri("/api/brands/all")
-        .to_request();
+    let req = test::TestRequest::delete().uri("/api/brands").to_request();
     test::call_service(&mut app, req).await;
 
     // Create two brands and get them all
@@ -100,7 +98,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::GET,
-        "/api/brands/all",
+        "/api/brands",
         "",
         StatusCode::OK,
         format!("[{{\"id\":{},\"name\":\"01_name\",\"description\":\"01_description\"}},{{\"id\":{},\"name\":\"02_name\",\"description\":\"02_description\"}}]", id1, id2)
@@ -110,7 +108,7 @@ pub async fn brand_test(
     do_test!(
         app,
         Method::DELETE,
-        "/api/brands/all",
+        "/api/brands",
         "",
         StatusCode::OK,
         "Deleted all objects"

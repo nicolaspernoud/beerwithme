@@ -44,9 +44,9 @@ abstract class Serialisable {
 abstract class Crud<T extends Serialisable> {
   Create(T val) {}
 
-  Read(int id) {}
+  ReadOne(int id) {}
 
-  ReadAll() {}
+  Read([String? queryFilter]) {}
 
   Update(T val) {}
 
@@ -85,7 +85,7 @@ class APICrud<T extends Serialisable> extends Crud<T> {
     }
   }
 
-  Future<T> Read(int id) async {
+  Future<T> ReadOne(int id) async {
     final response = await client.get(
       Uri.parse('$base/$route/${id.toString()}'),
       headers: <String, String>{
@@ -100,9 +100,11 @@ class APICrud<T extends Serialisable> extends Crud<T> {
     }
   }
 
-  Future<List<T>> ReadAll() async {
+  Future<List<T>> Read([String? queryFilter]) async {
     final response = await client.get(
-      Uri.parse('$base/$route/all'),
+      queryFilter == null
+          ? Uri.parse('$base/$route')
+          : Uri.parse('$base/$route?$queryFilter'),
       headers: <String, String>{'X-TOKEN': token},
     );
     if (response.statusCode == 200) {

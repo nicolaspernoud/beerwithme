@@ -11,7 +11,7 @@ class App {
   }
 
   bool get hasToken {
-    return prefs.getString("token") != null;
+    return prefs.getString("token") != null && prefs.getString("token") != "";
   }
 
   Future init() async {

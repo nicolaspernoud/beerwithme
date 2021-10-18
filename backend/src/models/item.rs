@@ -1,7 +1,8 @@
+use actix_web::HttpRequest;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    crud_create, crud_delete, crud_delete_all, crud_read, crud_read_all, crud_update, crud_use,
+    crud_create, crud_delete, crud_delete_all, crud_read, crud_update, crud_use,
     errors::ServerError,
     models::{brand::Brand, category::Category},
     schema::items,
@@ -66,7 +67,37 @@ crud_create!(
     categories,
     category_id
 );
-crud_read_all!(Item, items);
+
+#[derive(Deserialize)]
+pub struct Params {
+    name: String,
+}
+
+#[get("")]
+pub async fn read_filter(
+    req: HttpRequest,
+    pool: web::Data<DbPool>,
+) -> Result<HttpResponse, ServerError> {
+    let conn = pool.get()?;
+    let params = web::Query::<Params>::from_query(req.query_string());
+    let object: Vec<Item>;
+    use crate::schema::items::dsl::*;
+    match params {
+        Ok(p) => {
+            object = web::block(move || {
+                items
+                    .filter(name.like(format!("%{}%", p.name)))
+                    .load::<Item>(&conn)
+            })
+            .await?;
+        }
+        Err(_) => {
+            object = web::block(move || items.load::<Item>(&conn)).await?;
+        }
+    }
+    Ok(HttpResponse::Ok().json(object))
+}
+
 crud_read!(Item, items);
 crud_update!(
     Item,

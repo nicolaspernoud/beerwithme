@@ -30,7 +30,7 @@ macro_rules! crud_read {
 #[macro_export]
 macro_rules! crud_read_all {
     ($model:ty, $table:tt) => {
-        #[get("/all")]
+        #[get("")]
         pub async fn read_all(pool: web::Data<DbPool>) -> Result<HttpResponse, ServerError> {
             let conn = pool.get()?;
             let object = web::block(move || {
@@ -128,7 +128,7 @@ macro_rules! crud_delete {
 #[macro_export]
 macro_rules! crud_delete_all {
     ($model:ty, $table:tt) => {
-        #[delete("/all")]
+        #[delete("")]
         pub async fn delete_all(pool: web::Data<DbPool>) -> Result<HttpResponse, ServerError> {
             let conn = pool.get()?;
             web::block(move || {

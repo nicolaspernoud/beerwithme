@@ -17,11 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Beer with me !',
+      title: 'Beer with me!',
       theme: ThemeData(
         primarySwatch: Colors.brown,
       ),
-      home: MyHomePage(title: 'Beer with me !'),
+      home: MyHomePage(title: 'Beer with me!'),
       localizationsDelegates: [
         const MyLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,

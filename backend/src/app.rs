@@ -37,7 +37,7 @@ macro_rules! create_app {
             )
             .service(
                 web::scope("/api/items")
-                    .service(item::read_all)
+                    .service(item::read_filter)
                     .service(item::read)
                     .service(item::create)
                     .service(item::update)
