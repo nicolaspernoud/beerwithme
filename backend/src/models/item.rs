@@ -43,7 +43,10 @@ pub struct Item {
     pub brand_id: i32,
     pub category_id: i32,
     pub name: String,
+    pub alcohol: f32,
+    pub ibu: i32,
     pub description: String,
+    pub rating: i32,
     pub time: chrono::NaiveDateTime,
 }
 impl Item {
@@ -56,7 +59,10 @@ pub struct NewItem {
     pub brand_id: i32,
     pub category_id: i32,
     pub name: String,
+    pub alcohol: f32,
+    pub ibu: i32,
     pub description: String,
+    pub rating: i32,
 }
 impl NewItem {
     trim!();

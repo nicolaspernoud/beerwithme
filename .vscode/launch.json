@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "Beer with me ! Front End (Flutter)",
+      "name": "Beer with me! Front End (Flutter)",
       "program": "frontend/lib/main.dart",
       "request": "launch",
       "type": "dart",

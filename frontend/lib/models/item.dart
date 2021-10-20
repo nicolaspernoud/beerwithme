@@ -7,7 +7,10 @@ class Item extends Serialisable with EquatableMixin {
   int category_id;
   int brand_id;
   String name;
+  double alcohol;
+  int ibu;
   String description;
+  int rating;
   DateTime time;
 
   Item({
@@ -15,7 +18,10 @@ class Item extends Serialisable with EquatableMixin {
     required this.category_id,
     required this.brand_id,
     required this.name,
+    required this.alcohol,
+    required this.ibu,
     required this.description,
+    required this.rating,
     required this.time,
   });
 
@@ -25,7 +31,10 @@ class Item extends Serialisable with EquatableMixin {
       'category_id': category_id,
       'brand_id': brand_id,
       'name': name,
+      'alcohol': alcohol,
+      'ibu': ibu,
       'description': description,
+      'rating': rating,
       'time': time.toIso8601String(),
     };
   }
@@ -36,7 +45,10 @@ class Item extends Serialisable with EquatableMixin {
       category_id: json['category_id'],
       brand_id: json['brand_id'],
       name: json['name'],
+      alcohol: json['alcohol'],
+      ibu: json['ibu'],
       description: json['description'],
+      rating: json['rating'],
       time:
           json['time'] != null ? DateTime.parse(json['time']) : DateTime.now(),
     );
@@ -44,7 +56,17 @@ class Item extends Serialisable with EquatableMixin {
 
   @override
   List<Object> get props {
-    return [id, category_id, brand_id, name, description, time];
+    return [
+      id,
+      category_id,
+      brand_id,
+      name,
+      alcohol,
+      ibu,
+      description,
+      rating,
+      time
+    ];
   }
 
   @override

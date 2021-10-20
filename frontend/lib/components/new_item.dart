@@ -15,6 +15,7 @@ import 'package:image/image.dart' as image;
 import '../globals.dart';
 import '../i18n.dart';
 import 'new_brand.dart';
+import 'star_rating.dart';
 
 class NewEditItem extends StatefulWidget {
   final Crud crud;
@@ -139,8 +140,6 @@ class _NewEditItemState extends State<NewEditItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(formatTime(widget.item.time)),
-                SizedBox(height: 10),
                 TextFormField(
                   maxLength: 75,
                   decoration: new InputDecoration(
@@ -158,19 +157,66 @@ class _NewEditItemState extends State<NewEditItem> {
                     widget.item.name = value;
                   },
                 ),
-                SizedBox(height: 10),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: Text(
+                          '${MyLocalizations.of(context)!.tr("alcohol")} (${widget.item.alcohol.toStringAsFixed(1)})'),
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: widget.item.alcohol,
+                        min: 0,
+                        max: 100,
+                        divisions: 1000,
+                        label: widget.item.alcohol.toStringAsFixed(1),
+                        onChanged: (value) {
+                          setState(() {
+                            widget.item.alcohol =
+                                double.parse(value.toStringAsFixed(1));
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
                 CategoriesDropDown(
                   crud: widget.categoriesCrud,
                   callback: (val) => widget.item.category_id = val,
                   initialIndex: widget.item.category_id,
                 ),
-                SizedBox(height: 10),
-                BrandsDropDown(
-                  crud: widget.brandsCrud,
-                  callback: (val) => widget.item.brand_id = val,
-                  initialIndex: widget.item.brand_id,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: BrandsDropDown(
+                    crud: widget.brandsCrud,
+                    callback: (val) => widget.item.brand_id = val,
+                    initialIndex: widget.item.brand_id,
+                  ),
                 ),
-                SizedBox(height: 10),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: Text(
+                          '${MyLocalizations.of(context)!.tr("ibu")} (${widget.item.ibu.round().toString()})'),
+                    ),
+                    Expanded(
+                      child: Slider(
+                        value: widget.item.ibu.toDouble(),
+                        min: 0,
+                        max: 100,
+                        divisions: 100,
+                        label: widget.item.ibu.round().toString(),
+                        onChanged: (value) {
+                          setState(() {
+                            widget.item.ibu = value.round();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
                 TextFormField(
                   maxLines: 3,
                   decoration: new InputDecoration(
@@ -189,7 +235,24 @@ class _NewEditItemState extends State<NewEditItem> {
                     widget.item.description = value;
                   },
                 ),
-                SizedBox(height: 20),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      child: Text(MyLocalizations.of(context)!.tr("rating")),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      child: StarRating(
+                        rating: widget.item.rating,
+                        onRatingChanged: (rating) =>
+                            setState(() => widget.item.rating = rating.round()),
+                        color: Colors.amberAccent,
+                        alterable: true,
+                      ),
+                    )
+                  ],
+                ),
                 Center(
                   child: FutureBuilder<Uint8List?>(
                     future: imageBytes,
@@ -230,59 +293,68 @@ class _NewEditItemState extends State<NewEditItem> {
                     },
                   ),
                 ),
-                SizedBox(height: 20),
                 SizedBox(
-                  width: 140,
-                  height: 50,
-                  child: Center(
-                    child: AnimatedSwitcher(
-                      switchInCurve: Interval(
-                        0.5,
-                        1,
-                        curve: Curves.linear,
-                      ),
-                      switchOutCurve: Interval(
-                        0,
-                        0.5,
-                        curve: Curves.linear,
-                      ).flipped,
-                      duration: Duration(milliseconds: 500),
-                      child: !submitting
-                          ? ElevatedButton(
-                              onPressed: () async {
-                                // Validate returns true if the form is valid, or false otherwise.
-                                if (_formKey.currentState!.validate()) {
-                                  submitting = true;
-                                  setState(() {});
-                                  var msg = MyLocalizations.of(context)!
-                                      .tr("item_created");
-                                  try {
-                                    if (isExisting) {
-                                      await widget.crud.Update(widget.item);
-                                      await _imgToServer(widget.item.id);
-                                    } else {
-                                      var t =
-                                          await widget.crud.Create(widget.item);
-                                      await _imgToServer(t.id);
+                  height: 24,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 140,
+                      height: 50,
+                      child: Center(
+                        child: AnimatedSwitcher(
+                          switchInCurve: Interval(
+                            0.5,
+                            1,
+                            curve: Curves.linear,
+                          ),
+                          switchOutCurve: Interval(
+                            0,
+                            0.5,
+                            curve: Curves.linear,
+                          ).flipped,
+                          duration: Duration(milliseconds: 500),
+                          child: !submitting
+                              ? ElevatedButton(
+                                  onPressed: () async {
+                                    // Validate returns true if the form is valid, or false otherwise.
+                                    if (_formKey.currentState!.validate()) {
+                                      submitting = true;
+                                      setState(() {});
+                                      var msg = MyLocalizations.of(context)!
+                                          .tr("item_created");
+                                      try {
+                                        if (isExisting) {
+                                          await widget.crud.Update(widget.item);
+                                          await _imgToServer(widget.item.id);
+                                        } else {
+                                          var t = await widget.crud
+                                              .Create(widget.item);
+                                          await _imgToServer(t.id);
+                                        }
+                                      } catch (e) {
+                                        msg = e.toString();
+                                      }
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(msg)),
+                                      );
+                                      Navigator.pop(context);
                                     }
-                                  } catch (e) {
-                                    msg = e.toString();
-                                  }
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(msg)),
-                                  );
-                                  Navigator.pop(context);
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                    MyLocalizations.of(context)!.tr("submit")),
-                              ),
-                            )
-                          : Center(child: CircularProgressIndicator()),
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(MyLocalizations.of(context)!
+                                        .tr("submit")),
+                                  ),
+                                )
+                              : Center(child: CircularProgressIndicator()),
+                        ),
+                      ),
                     ),
-                  ),
+                    Text(formatTime(widget.item.time)),
+                  ],
                 ),
               ],
             ),
@@ -340,25 +412,35 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
             widget.callback(_index);
             return Row(
               children: [
-                Text(MyLocalizations.of(context)!.tr("category")),
-                const SizedBox(width: 8),
-                DropdownButton<int>(
-                  value: _index,
-                  items: snapshot.data!.map((a) {
-                    return new DropdownMenuItem<int>(
-                      value: a.id,
-                      child: new Text(
-                        a.name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _index = value!;
-                    });
-                    widget.callback(value!);
-                  },
+                SizedBox(
+                    width: 60,
+                    child: Text(MyLocalizations.of(context)!.tr("category"))),
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: SizedBox(
+                    width: 150,
+                    child: DropdownButton<int>(
+                      value: _index,
+                      items: snapshot.data!.map((a) {
+                        return new DropdownMenuItem<int>(
+                          value: a.id,
+                          child: SizedBox(
+                            width: 125,
+                            child: new Text(
+                              a.name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _index = value!;
+                        });
+                        widget.callback(value!);
+                      },
+                    ),
+                  ),
                 ),
               ],
             );
@@ -421,25 +503,35 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
                 widget.callback(_index);
                 return Row(
                   children: [
-                    Text(MyLocalizations.of(context)!.tr("brands")),
-                    const SizedBox(width: 8),
-                    DropdownButton<int>(
-                      value: _index,
-                      items: snapshot.data!.map((a) {
-                        return new DropdownMenuItem<int>(
-                          value: a.id,
-                          child: new Text(
-                            a.name,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _index = value!;
-                        });
-                        widget.callback(value!);
-                      },
+                    SizedBox(
+                        width: 60,
+                        child: Text(MyLocalizations.of(context)!.tr("brand"))),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 24),
+                      child: SizedBox(
+                        width: 150,
+                        child: DropdownButton<int>(
+                          value: _index,
+                          items: snapshot.data!.map((a) {
+                            return new DropdownMenuItem<int>(
+                              value: a.id,
+                              child: SizedBox(
+                                width: 125,
+                                child: Text(
+                                  a.name,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _index = value!;
+                            });
+                            widget.callback(value!);
+                          },
+                        ),
+                      ),
                     ),
                     IconButton(
                         onPressed: () {

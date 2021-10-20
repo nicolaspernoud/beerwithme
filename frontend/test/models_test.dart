@@ -25,7 +25,10 @@ void main() {
         category_id: 10,
         brand_id: 20,
         name: "a name",
+        alcohol: 5.0,
+        ibu: 50,
         description: "a description",
+        rating: 5,
         time: DateTime.now(),
       );
       final a1Json = jsonEncode(i1.toJson());

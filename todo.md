@@ -6,14 +6,14 @@
 [x] Logging
 [x] Photos
 [x] Filter
-[ ] Marks
+[x] Marks
 [ ] Correct code smells
 
 ## Frontend
 
-[/] Basic tests
+[x] Basic tests
 [x] Filter
-[ ] Marks
+[x] Marks
 [ ] Correct code smells
 
 ## Integration

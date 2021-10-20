@@ -19,6 +19,6 @@ pub async fn category_test(
         "/api/categories",
         "",
         StatusCode::OK,
-        r#"[{"id":9,"name":"Belgian Style","#
+        r#"[{"id":1,"name":"Belgian Style","#
     );
 }

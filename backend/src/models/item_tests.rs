@@ -16,8 +16,24 @@ pub async fn item_test(
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             write!(
                 f,
-                "{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"{}\",\"description\":\"{}\"}}",
-                self.id, self.brand_id, self.name, self.description
+                "
+                id: {}\n
+                brand_id: {}\n
+                category_id: {}\n
+                name: {}\n
+                alcohol: {}\n
+                ibu: {}\n
+                description: {}\n
+                rating: {}\n
+                ",
+                self.id,
+                self.brand_id,
+                self.category_id,
+                self.name,
+                self.alcohol,
+                self.ibu,
+                self.description,
+                self.rating
             )
         }
     }
@@ -37,7 +53,7 @@ pub async fn item_test(
         app,
         Method::POST,
         "/api/items",
-        "{\"brand_id\":1,\"category_id\":6,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}",
+        r#"{"brand_id":1,"category_id":6,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"ibu":50,"rating":5}"#,
         StatusCode::NOT_FOUND,
         "Item not found"
     );
@@ -46,30 +62,36 @@ pub async fn item_test(
         app,
         Method::POST,
         "/api/brands",
-        "{\"name\":\"  Test brand  \",\"description\":\"    Test description       \"}",
+        r#"{"name":"  Test brand  ","description":"    Test description       "}"#,
         StatusCode::CREATED,
         "{\"id\""
     );
 
     // Create a item with an non existing category
     do_test!(
-            app,
-            Method::POST,
-            "/api/items",
-            &format!("{{\"brand_id\":{},\"category_id\":106,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}}",brand_id),
-            StatusCode::NOT_FOUND,
-            "Item not found"
-        );
+        app,
+        Method::POST,
+        "/api/items",
+        &format!(
+            r#"{{"brand_id":{},"category_id":106,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"ibu":50,"rating":5}}"#,
+            brand_id
+        ),
+        StatusCode::NOT_FOUND,
+        "Item not found"
+    );
 
     // Create a item with an existing brand and category
     let id = do_test_extract_id!(
-            app,
-            Method::POST,
-            "/api/items",
-            &format!("{{\"brand_id\":{},\"category_id\":6,\"name\":\"  Test item  \",\"description\":\"    Test description       \"}}",brand_id),
-            StatusCode::CREATED,
-            "{\"id\""
-        );
+        app,
+        Method::POST,
+        "/api/items",
+        &format!(
+            r#"{{"brand_id":{},"category_id":6,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"ibu":50,"rating":5}}"#,
+            brand_id
+        ),
+        StatusCode::CREATED,
+        "{\"id\""
+    );
 
     // Get a item
     do_test!(
@@ -79,7 +101,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            "{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"Test item\",\"description\":\"Test description\",\"time\":",
+            r#"{{"id":{},"brand_id":{},"category_id":6,"name":"Test item","alcohol":5.0,"ibu":50,"description":"Test description","rating":5,"time":"#,
             id, brand_id
         )
     );
@@ -104,11 +126,17 @@ pub async fn item_test(
             brand_id: brand_id,
             category_id: 6,
             name: String::from("   Patched name   "),
+            alcohol: 5.0,
+            ibu: 50,
             description: String::from("   Patched description   "),
+            rating: 5,
             time: chrono::Utc::now().naive_utc()
         },
         StatusCode::OK,
-        format!("{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"Patched name\",\"description\":\"Patched description\"",id,brand_id)
+        format!(
+            r#"{{"id":{},"brand_id":{},"category_id":6,"name":"Patched name","alcohol":5.0,"ibu":50,"description":"Patched description","rating":5"#,
+            id, brand_id
+        )
     );
 
     // Delete the item
@@ -137,7 +165,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            "{{\"brand_id\":{},\"category_id\":6, \"name\":\"01_name\",\"description\":\"01_description\"}}",
+            r#"{{"brand_id":{},"category_id":6, "name":"01_name","description":"01_description","alcohol":5.0,"ibu":50,"rating":5}}"#,
             brand_id
         ),
         StatusCode::CREATED,
@@ -148,7 +176,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            "{{\"brand_id\":{},\"category_id\":6, \"name\":\"02_name\",\"description\":\"02_description\"}}",
+            r#"{{"brand_id":{},"category_id":6, "name":"02_name","description":"02_description","alcohol":5.0,"ibu":50,"rating":5}}"#,
             brand_id
         ),
         StatusCode::CREATED,
@@ -161,7 +189,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            "[{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"01_name\",\"description\":\"01_description\"",
+            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"01_name","alcohol":5.0,"ibu":50,"description":"01_description","rating":5"#,
             id1, brand_id
         )
     );
@@ -172,7 +200,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            "[{{\"id\":{},\"brand_id\":{},\"category_id\":6,\"name\":\"02_name\",\"description\":\"02_description\"",
+            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"02_name","alcohol":5.0,"ibu":50,"description":"02_description","rating":5"#,
             id2, brand_id
         )
     );
@@ -197,7 +225,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            "{{\"brand_id\":{},\"category_id\":6, \"name\":\"01_name\",\"description\":\"01_description\"}}",
+            r#"{{"brand_id":{},"category_id":6, "name":"01_name","description":"01_description","alcohol":5.0,"ibu":50,"rating":5}}"#,
             brand_id
         ),
         StatusCode::CREATED,

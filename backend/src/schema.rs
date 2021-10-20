@@ -20,7 +20,10 @@ table! {
         brand_id -> Integer,
         category_id -> Integer,
         name -> Text,
+        alcohol -> Float,
+        ibu -> Integer,
         description -> Text,
+        rating -> Integer,
         time -> Timestamp,
     }
 }

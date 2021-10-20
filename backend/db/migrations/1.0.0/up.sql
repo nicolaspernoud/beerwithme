@@ -14,8 +14,12 @@ INSERT INTO
     categories (name, description)
 VALUES
     (
-        "Pale Lager & Pilsner",
-        "Pale lager and pilsners are golden-colored beers that are light in flavor and low in alcohol content."
+        "Belgian Style",
+        "Belgian beers are known for their spiced fruity flavors and high alcohol content."
+    ),
+    (
+        "Brown Ale",
+        "Brown ales feature malty overtones and tend to have toasty, caramel flavors."
     ),
     (
         "Dark Lager",
@@ -26,40 +30,36 @@ VALUES
         "German bocks are heavy on malty flavor, making them sweet and nutty."
     ),
     (
-        "Brown Ale",
-        "Brown ales feature malty overtones and tend to have toasty, caramel flavors."
+        "India Pale Ale (IPA)",
+        "IPAs boast strong hop bitterness with piney and floral flavors."
     ),
     (
         "Pale Ale",
         "Pale ales are generally hoppy but lower in alcohol content than IPAs."
     ),
     (
-        "India Pale Ale (IPA)",
-        "IPAs boast strong hop bitterness with piney and floral flavors."
+        "Pale Lager & Pilsner",
+        "Pale lager and pilsners are golden-colored beers that are light in flavor and low in alcohol content."
     ),
     (
         "Porter",
         "Porters are all dark in color, and they feature flavors reminiscent of chocolate, coffee, and caramel."
     ),
     (
+        "Specialty Beer",
+        "Beers made with additional spices, flavorings, or fruits are called specialty beers."
+    ),
+    (
         "Stout",
         "Stouts are dark beers that are similar to porters but with stronger roasted flavors."
     ),
     (
-        "Belgian Style",
-        "Belgian beers are known for their spiced fruity flavors and high alcohol content."
-    ),
-    (
         "Wheat Beer",
-        "Wheat beers use wheat as their malt. They're generally lighter in color and alcohol content. "
+        "Wheat beers use wheat as their malt. They're generally lighter in color and alcohol content."
     ),
     (
         "Wild & Sour Ale",
         "Wild or sour ales are typically very low in alcohol, and feature tart, sour flavors that come from (safe) bacteria in the brew mash."
-    ),
-    (
-        "Specialty Beer",
-        "Beers made with additional spices, flavorings, or fruits are called specialty beers."
     );
 
 CREATE TABLE items (
@@ -67,7 +67,10 @@ CREATE TABLE items (
     brand_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
     name VARCHAR NOT NULL,
+    alcohol REAL NOT NULL,
+    ibu INTEGER NOT NULL,
     description VARCHAR NOT NULL,
+    rating INTEGER NOT NULL,
     time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(brand_id) REFERENCES brands(id) ON DELETE CASCADE,
     FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE

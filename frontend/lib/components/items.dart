@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/star_rating.dart';
 import 'package:frontend/models/brand.dart';
 import 'package:frontend/models/category.dart';
 import 'package:frontend/models/crud.dart';
@@ -123,10 +124,26 @@ class _ItemsState extends State<Items> {
                               children: <Widget>[
                                 ListTile(
                                     leading: Icon(Icons.sports_bar),
-                                    title: Text(itms.elementAt(i).name),
-                                    subtitle: Text(
-                                      itms.elementAt(i).description,
-                                      maxLines: 2,
+                                    title: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: StarRating(
+                                            rating: itms.elementAt(i).rating,
+                                            onRatingChanged: (rating) => null,
+                                            color: Colors.amberAccent,
+                                            alterable: false,
+                                          ),
+                                        ),
+                                        Text(itms.elementAt(i).name),
+                                      ],
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        itms.elementAt(i).description,
+                                        maxLines: 2,
+                                      ),
                                     ))
                               ],
                             ),
@@ -162,7 +179,10 @@ class _ItemsState extends State<Items> {
                       category_id: 1,
                       brand_id: 1,
                       name: "",
+                      alcohol: 5.0,
+                      ibu: 0,
                       description: "",
+                      rating: 5,
                       time: DateTime.now(),
                     ));
                   }),
