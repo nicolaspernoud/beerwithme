@@ -12,7 +12,7 @@ class MyLocalizations {
     return Localizations.of<MyLocalizations>(context, MyLocalizations);
   }
 
-  static Map<String, Map<String, String>> _localizedValues = {
+  static final Map<String, Map<String, String>> _localizedValues = {
     'en': {},
     'fr': {},
   };

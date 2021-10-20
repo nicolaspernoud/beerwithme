@@ -3,9 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'crud.dart';
 
 class Item extends Serialisable with EquatableMixin {
-  int id;
-  int category_id;
-  int brand_id;
+  int categoryId;
+  int brandId;
   String name;
   double alcohol;
   int ibu;
@@ -14,22 +13,23 @@ class Item extends Serialisable with EquatableMixin {
   DateTime time;
 
   Item({
-    required this.id,
-    required this.category_id,
-    required this.brand_id,
+    required id,
+    required this.categoryId,
+    required this.brandId,
     required this.name,
     required this.alcohol,
     required this.ibu,
     required this.description,
     required this.rating,
     required this.time,
-  });
+  }) : super(id: id);
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       if (id > 0) 'id': id,
-      'category_id': category_id,
-      'brand_id': brand_id,
+      'category_id': categoryId,
+      'brand_id': brandId,
       'name': name,
       'alcohol': alcohol,
       'ibu': ibu,
@@ -42,8 +42,8 @@ class Item extends Serialisable with EquatableMixin {
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       id: json['id'],
-      category_id: json['category_id'],
-      brand_id: json['brand_id'],
+      categoryId: json['category_id'],
+      brandId: json['brand_id'],
       name: json['name'],
       alcohol: json['alcohol'],
       ibu: json['ibu'],
@@ -58,8 +58,8 @@ class Item extends Serialisable with EquatableMixin {
   List<Object> get props {
     return [
       id,
-      category_id,
-      brand_id,
+      categoryId,
+      brandId,
       name,
       alcohol,
       ibu,

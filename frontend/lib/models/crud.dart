@@ -35,22 +35,25 @@ String routeByType(Type t) {
 }
 
 abstract class Serialisable {
-  Serialisable() {}
+  Serialisable({
+    required this.id,
+  });
+
   fromJson(Map<String, dynamic> json) {}
-  final int id = 0;
+  int id = 0;
   Map<String, dynamic> toJson();
 }
 
 abstract class Crud<T extends Serialisable> {
-  Create(T val) {}
+  create(T val) {}
 
-  ReadOne(int id) {}
+  readOne(int id) {}
 
-  Read([String? queryFilter]) {}
+  read([String? queryFilter]) {}
 
-  Update(T val) {}
+  update(T val) {}
 
-  Delete(int id) {}
+  delete(int id) {}
 }
 
 class APICrud<T extends Serialisable> extends Crud<T> {
@@ -69,7 +72,8 @@ class APICrud<T extends Serialisable> extends Crud<T> {
     }
   }
 
-  Future<T> Create(T val) async {
+  @override
+  Future<T> create(T val) async {
     final response = await client.post(
       Uri.parse('$base/$route'),
       headers: <String, String>{
@@ -85,7 +89,8 @@ class APICrud<T extends Serialisable> extends Crud<T> {
     }
   }
 
-  Future<T> ReadOne(int id) async {
+  @override
+  Future<T> readOne(int id) async {
     final response = await client.get(
       Uri.parse('$base/$route/${id.toString()}'),
       headers: <String, String>{
@@ -100,7 +105,8 @@ class APICrud<T extends Serialisable> extends Crud<T> {
     }
   }
 
-  Future<List<T>> Read([String? queryFilter]) async {
+  @override
+  Future<List<T>> read([String? queryFilter]) async {
     final response = await client.get(
       queryFilter == null
           ? Uri.parse('$base/$route')
@@ -116,7 +122,8 @@ class APICrud<T extends Serialisable> extends Crud<T> {
     }
   }
 
-  Update(T val) async {
+  @override
+  update(T val) async {
     final response = await client.patch(
       Uri.parse('$base/$route/${val.id}'),
       headers: <String, String>{
@@ -130,9 +137,10 @@ class APICrud<T extends Serialisable> extends Crud<T> {
     }
   }
 
-  Delete(int id) async {
+  @override
+  delete(int id) async {
     final response = await client.delete(
-      Uri.parse('$base/$route/${id}'),
+      Uri.parse('$base/$route/$id'),
       headers: <String, String>{'Authorization': "Bearer " + token},
     );
     if (response.statusCode != 200) {

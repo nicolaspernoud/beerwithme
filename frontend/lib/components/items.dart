@@ -31,11 +31,10 @@ class _ItemsState extends State<Items> {
   void initState() {
     super.initState();
     if (App().hasToken) {
-      items = widget.crud.Read();
+      items = widget.crud.read();
     } else {
       WidgetsBinding.instance?.addPostFrameCallback(openSettings);
     }
-    ;
   }
 
   void openSettings(_) async {
@@ -43,8 +42,8 @@ class _ItemsState extends State<Items> {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text(MyLocalizations.of(context)!.tr("settings")),
-        content: Container(
-          child: const settingsField(),
+        content: const SizedBox(
+          child: SettingsField(),
           height: 150,
         ),
         actions: <Widget>[
@@ -62,7 +61,7 @@ class _ItemsState extends State<Items> {
 
   void hasRoleOrOpenSettings(_) {
     if (App().hasToken) {
-      items = widget.crud.Read();
+      items = widget.crud.read();
     } else {
       openSettings(_);
     }
@@ -83,7 +82,7 @@ class _ItemsState extends State<Items> {
               const SizedBox(width: 8),
               Text(
                 widget.title,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               )
             ],
           ),
@@ -123,14 +122,16 @@ class _ItemsState extends State<Items> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
-                                    leading: Icon(Icons.sports_bar),
+                                    leading: const Icon(Icons.sports_bar),
                                     title: Row(
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: StarRating(
                                             rating: itms.elementAt(i).rating,
-                                            onRatingChanged: (rating) => null,
+                                            onRatingChanged: (rating) {
+                                              return;
+                                            },
                                             color: Colors.amberAccent,
                                             alterable: false,
                                           ),
@@ -159,7 +160,7 @@ class _ItemsState extends State<Items> {
                       child = const CircularProgressIndicator();
                     }
                     return AnimatedSwitcher(
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       child: child,
                     );
                   },
@@ -176,8 +177,8 @@ class _ItemsState extends State<Items> {
                   onPressed: () {
                     _edit(Item(
                       id: 0,
-                      category_id: 1,
-                      brand_id: 1,
+                      categoryId: 1,
+                      brandId: 1,
                       name: "",
                       alcohol: 5.0,
                       ibu: 0,
@@ -195,21 +196,20 @@ class _ItemsState extends State<Items> {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Icon(Icons.search),
+                  const Icon(Icons.search),
                   SizedBox(
                     width: 200,
                     child: TextFormField(
                         initialValue: "",
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             labelText:
                                 MyLocalizations.of(context)!.tr("search")),
                         // The validator receives the text that the user has entered.
                         onChanged: (value) {
                           filter = value;
-                          EasyDebounce.debounce(
-                              'read-items-filter', Duration(milliseconds: 250),
-                              () {
-                            items = widget.crud.Read("name=" + filter);
+                          EasyDebounce.debounce('read-items-filter',
+                              const Duration(milliseconds: 250), () {
+                            items = widget.crud.read("name=" + filter);
                             setState(() {});
                           });
                         }),
@@ -230,7 +230,7 @@ class _ItemsState extends State<Items> {
           brandsCrud: APICrud<Brand>(),
           item: t);
     }));
-    items = widget.crud.Read("name=" + filter);
+    items = widget.crud.read("name=" + filter);
     setState(() {});
   }
 }

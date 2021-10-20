@@ -28,7 +28,7 @@ mod utils;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    if let Err(_) = env::var("RUST_LOG") {
+    if env::var("RUST_LOG").is_err() {
         env::set_var("RUST_LOG", "info");
     }
 

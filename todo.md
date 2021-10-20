@@ -7,14 +7,16 @@
 [x] Photos
 [x] Filter
 [x] Marks
-[ ] Correct code smells
+[x] Correct code smells
 
 ## Frontend
 
 [x] Basic tests
 [x] Filter
 [x] Marks
-[ ] Correct code smells
+[x] Correct code smells
+[ ] Translations
+[ ] Fix logo and colors
 
 ## Integration
 

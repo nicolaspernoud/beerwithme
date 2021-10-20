@@ -30,7 +30,7 @@ class _NewEditCategoryState extends State<NewEditCategory> {
                   IconButton(
                       icon: const Icon(Icons.delete_forever),
                       onPressed: () async {
-                        await widget.crud.Delete(widget.category.id);
+                        await widget.crud.delete(widget.category.id);
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(MyLocalizations.of(context)!
@@ -48,7 +48,7 @@ class _NewEditCategoryState extends State<NewEditCategory> {
                 children: [
                   TextFormField(
                     initialValue: widget.category.name,
-                    decoration: new InputDecoration(
+                    decoration: InputDecoration(
                         labelText: MyLocalizations.of(context)!.tr("name")),
                     // The validator receives the text that the user has entered.
                     validator: (value) {
@@ -64,7 +64,7 @@ class _NewEditCategoryState extends State<NewEditCategory> {
                   ),
                   TextFormField(
                     initialValue: widget.category.description,
-                    decoration: new InputDecoration(
+                    decoration: InputDecoration(
                         labelText:
                             MyLocalizations.of(context)!.tr("description")),
                     // The validator receives the text that the user has entered.
@@ -89,12 +89,11 @@ class _NewEditCategoryState extends State<NewEditCategory> {
                               .tr("category_created");
                           try {
                             if (widget.category.id > 0) {
-                              await widget.crud.Update(widget.category);
+                              await widget.crud.update(widget.category);
                             } else {
-                              await widget.crud.Create(widget.category);
+                              await widget.crud.create(widget.category);
                             }
                             // Do nothing on TypeError as Create respond with a null id
-                          } on TypeError {
                           } catch (e) {
                             msg = e.toString();
                           }

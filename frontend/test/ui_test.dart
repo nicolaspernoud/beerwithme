@@ -12,10 +12,10 @@ Future<void> main() async {
     await App().init();
     // Build our app and trigger a frame
     await tester.pumpWidget(
-      MaterialApp(
+      const MaterialApp(
         home: MyHomePage(title: 'Beer with me!'),
         localizationsDelegates: [
-          const MyLocalizationsDelegate(),
+          MyLocalizationsDelegate(),
         ],
       ),
     );
@@ -26,7 +26,7 @@ Future<void> main() async {
     // Check that we do not display the ticket list on startup if a user token is not set
     expect(find.text("01_name"), findsNothing);
     // Enter a user token
-    await tester.enterText(find.byKey(Key("tokenField")), 'a_token');
+    await tester.enterText(find.byKey(const Key("tokenField")), 'a_token');
     await tester.tap(find.text("OK"));
     await tester.pumpAndSettle();
     // Check that we display the ticket list if a user token is set

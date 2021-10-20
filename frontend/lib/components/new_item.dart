@@ -35,6 +35,7 @@ class NewEditItem extends StatefulWidget {
 }
 
 class _NewEditItemState extends State<NewEditItem> {
+  // ignore: constant_identifier_names
   static const JPG_IMAGE_QUALITY = 80;
 
   final _formKey = GlobalKey<FormState>();
@@ -51,7 +52,7 @@ class _NewEditItemState extends State<NewEditItem> {
     super.initState();
     isExisting = widget.item.id > 0;
     if (isExisting) {
-      itemWithComments = widget.crud.ReadOne(widget.item.id);
+      itemWithComments = widget.crud.readOne(widget.item.id);
       _imgFromServer(widget.item.id);
     } else {
       itemWithComments = Future<Item>.value(widget.item);
@@ -123,7 +124,7 @@ class _NewEditItemState extends State<NewEditItem> {
                   IconButton(
                       icon: const Icon(Icons.delete_forever),
                       onPressed: () async {
-                        await widget.crud.Delete(widget.item.id);
+                        await widget.crud.delete(widget.item.id);
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(MyLocalizations.of(context)!
@@ -142,7 +143,7 @@ class _NewEditItemState extends State<NewEditItem> {
               children: [
                 TextFormField(
                   maxLength: 75,
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                       labelText: MyLocalizations.of(context)!.tr("name")),
                   // The validator receives the text that the user has entered.
                   validator: (value) {
@@ -183,15 +184,15 @@ class _NewEditItemState extends State<NewEditItem> {
                 ),
                 CategoriesDropDown(
                   crud: widget.categoriesCrud,
-                  callback: (val) => widget.item.category_id = val,
-                  initialIndex: widget.item.category_id,
+                  callback: (val) => widget.item.categoryId = val,
+                  initialIndex: widget.item.categoryId,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24),
                   child: BrandsDropDown(
                     crud: widget.brandsCrud,
-                    callback: (val) => widget.item.brand_id = val,
-                    initialIndex: widget.item.brand_id,
+                    callback: (val) => widget.item.brandId = val,
+                    initialIndex: widget.item.brandId,
                   ),
                 ),
                 Row(
@@ -219,7 +220,7 @@ class _NewEditItemState extends State<NewEditItem> {
                 ),
                 TextFormField(
                   maxLines: 3,
-                  decoration: new InputDecoration(
+                  decoration: InputDecoration(
                       labelText:
                           MyLocalizations.of(context)!.tr("description")),
                   // The validator receives the text that the user has entered.
@@ -279,7 +280,7 @@ class _NewEditItemState extends State<NewEditItem> {
                                   imageBytes = Future.value(null);
                                   setState(() {});
                                 },
-                                icon: Icon(Icons.clear))
+                                icon: const Icon(Icons.clear))
                           ],
                         );
                       } else if (snapshot.hasError) {
@@ -289,11 +290,11 @@ class _NewEditItemState extends State<NewEditItem> {
                           onPressed: () {
                             _imgFromCamera();
                           },
-                          icon: Icon(Icons.camera_alt));
+                          icon: const Icon(Icons.camera_alt));
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 24,
                 ),
                 Row(
@@ -304,17 +305,17 @@ class _NewEditItemState extends State<NewEditItem> {
                       height: 50,
                       child: Center(
                         child: AnimatedSwitcher(
-                          switchInCurve: Interval(
+                          switchInCurve: const Interval(
                             0.5,
                             1,
                             curve: Curves.linear,
                           ),
-                          switchOutCurve: Interval(
+                          switchOutCurve: const Interval(
                             0,
                             0.5,
                             curve: Curves.linear,
                           ).flipped,
-                          duration: Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 500),
                           child: !submitting
                               ? ElevatedButton(
                                   onPressed: () async {
@@ -326,11 +327,11 @@ class _NewEditItemState extends State<NewEditItem> {
                                           .tr("item_created");
                                       try {
                                         if (isExisting) {
-                                          await widget.crud.Update(widget.item);
+                                          await widget.crud.update(widget.item);
                                           await _imgToServer(widget.item.id);
                                         } else {
                                           var t = await widget.crud
-                                              .Create(widget.item);
+                                              .create(widget.item);
                                           await _imgToServer(t.id);
                                         }
                                       } catch (e) {
@@ -349,7 +350,8 @@ class _NewEditItemState extends State<NewEditItem> {
                                         .tr("submit")),
                                   ),
                                 )
-                              : Center(child: CircularProgressIndicator()),
+                              : const Center(
+                                  child: CircularProgressIndicator()),
                         ),
                       ),
                     ),
@@ -363,7 +365,7 @@ class _NewEditItemState extends State<NewEditItem> {
   }
 }
 
-typedef void IntCallback(int val);
+typedef IntCallback = void Function(int val);
 
 class CategoriesDropDown extends StatefulWidget {
   final IntCallback callback;
@@ -387,7 +389,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
   @override
   void initState() {
     super.initState();
-    categories = widget.crud.Read();
+    categories = widget.crud.read();
     _index = widget.initialIndex;
   }
 
@@ -396,7 +398,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
     return FutureBuilder<List<category.Category>>(
         future: categories,
         builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data!.length > 0) {
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             // Check that index exists
             var minID = snapshot.data!.first.id;
             var indexExists = false;
@@ -406,7 +408,6 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
                 indexExists = true;
                 break;
               }
-              ;
             }
             if (!indexExists) _index = minID;
             widget.callback(_index);
@@ -422,11 +423,11 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
                     child: DropdownButton<int>(
                       value: _index,
                       items: snapshot.data!.map((a) {
-                        return new DropdownMenuItem<int>(
+                        return DropdownMenuItem<int>(
                           value: a.id,
                           child: SizedBox(
                             width: 125,
-                            child: new Text(
+                            child: Text(
                               a.name,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -477,7 +478,7 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
   @override
   void initState() {
     super.initState();
-    brands = widget.crud.Read();
+    brands = widget.crud.read();
     _index = widget.initialIndex;
   }
 
@@ -513,7 +514,7 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
                         child: DropdownButton<int>(
                           value: _index,
                           items: snapshot.data!.map((a) {
-                            return new DropdownMenuItem<int>(
+                            return DropdownMenuItem<int>(
                               value: a.id,
                               child: SizedBox(
                                 width: 125,
@@ -564,7 +565,7 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
       return NewEditBrand(crud: APICrud<Brand>(), brand: c);
     }));
     setState(() {
-      brands = widget.crud.Read();
+      brands = widget.crud.read();
     });
   }
 }

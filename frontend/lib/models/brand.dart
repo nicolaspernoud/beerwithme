@@ -2,16 +2,16 @@ import 'package:frontend/models/crud.dart';
 import 'package:equatable/equatable.dart';
 
 class Brand extends Serialisable with EquatableMixin {
-  int id;
   String name;
   String description;
 
   Brand({
-    required this.id,
+    required id,
     required this.name,
     required this.description,
-  });
+  }) : super(id: id);
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       if (id > 0) 'id': id,

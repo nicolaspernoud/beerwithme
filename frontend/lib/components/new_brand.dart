@@ -30,7 +30,7 @@ class _NewEditBrandState extends State<NewEditBrand> {
                   IconButton(
                       icon: const Icon(Icons.delete_forever),
                       onPressed: () async {
-                        await widget.crud.Delete(widget.brand.id);
+                        await widget.crud.delete(widget.brand.id);
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(MyLocalizations.of(context)!
@@ -48,7 +48,7 @@ class _NewEditBrandState extends State<NewEditBrand> {
                 children: [
                   TextFormField(
                     initialValue: widget.brand.name,
-                    decoration: new InputDecoration(
+                    decoration: InputDecoration(
                         labelText: MyLocalizations.of(context)!.tr("title")),
                     // The validator receives the text that the user has entered.
                     validator: (value) {
@@ -64,7 +64,7 @@ class _NewEditBrandState extends State<NewEditBrand> {
                   ),
                   TextFormField(
                     initialValue: widget.brand.description,
-                    decoration: new InputDecoration(
+                    decoration: InputDecoration(
                         labelText:
                             MyLocalizations.of(context)!.tr("description")),
                     // The validator receives the text that the user has entered.
@@ -89,12 +89,11 @@ class _NewEditBrandState extends State<NewEditBrand> {
                               MyLocalizations.of(context)!.tr("brand_created");
                           try {
                             if (widget.brand.id > 0) {
-                              await widget.crud.Update(widget.brand);
+                              await widget.crud.update(widget.brand);
                             } else {
-                              await widget.crud.Create(widget.brand);
+                              await widget.crud.create(widget.brand);
                             }
                             // Do nothing on TypeError as Create respond with a null id
-                          } on TypeError {
                           } catch (e) {
                             msg = e.toString();
                           }

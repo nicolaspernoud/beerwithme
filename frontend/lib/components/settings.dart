@@ -21,7 +21,7 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     super.initState();
-    categories = widget.crud.Read();
+    categories = widget.crud.read();
   }
 
   @override
@@ -35,14 +35,14 @@ class _SettingsState extends State<Settings> {
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
-              settingsField(),
+              const SettingsField(),
               ...[
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Text(
                       MyLocalizations.of(context)!.tr("categories"),
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -63,7 +63,7 @@ class _SettingsState extends State<Settings> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         ListTile(
-                                          leading: Icon(Icons.label),
+                                          leading: const Icon(Icons.label),
                                           title: Text(a.name),
                                           subtitle: Text(a.description),
                                         ),
@@ -103,13 +103,13 @@ class _SettingsState extends State<Settings> {
       return NewEditCategory(crud: APICrud<Category>(), category: c);
     }));
     setState(() {
-      categories = widget.crud.Read();
+      categories = widget.crud.read();
     });
   }
 }
 
-class settingsField extends StatelessWidget {
-  const settingsField({
+class SettingsField extends StatelessWidget {
+  const SettingsField({
     Key? key,
   }) : super(key: key);
 
@@ -120,22 +120,22 @@ class settingsField extends StatelessWidget {
         if (!kIsWeb || kDebugMode)
           TextFormField(
             initialValue: App().prefs.getString("hostname"),
-            decoration: new InputDecoration(
+            decoration: InputDecoration(
                 labelText: MyLocalizations.of(context)!.tr("hostname")),
             onChanged: (text) {
               App().prefs.setString("hostname", text);
             },
-            key: Key("hostnameField"),
+            key: const Key("hostnameField"),
           ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         TextFormField(
           initialValue: App().prefs.getString("token"),
-          decoration: new InputDecoration(
+          decoration: InputDecoration(
               labelText: MyLocalizations.of(context)!.tr("token")),
           onChanged: (text) {
             App().prefs.setString("token", text);
           },
-          key: Key("tokenField"),
+          key: const Key("tokenField"),
         ),
       ],
     );

@@ -22,8 +22,8 @@ void main() {
         () async {
       final Item i1 = Item(
         id: 1,
-        category_id: 10,
-        brand_id: 20,
+        categoryId: 10,
+        brandId: 20,
         name: "a name",
         alcohol: 5.0,
         ibu: 50,
