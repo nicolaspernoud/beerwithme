@@ -161,9 +161,9 @@ class _NewEditItemState extends State<NewEditItem> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 60,
+                      width: 65,
                       child: Text(
-                          '${MyLocalizations.of(context)!.tr("alcohol")} (${widget.item.alcohol.toStringAsFixed(1)})'),
+                          '${MyLocalizations.of(context)!.tr("alcohol")} (${widget.item.alcohol.toStringAsFixed(1)}°)'),
                     ),
                     Expanded(
                       child: Slider(
@@ -198,7 +198,7 @@ class _NewEditItemState extends State<NewEditItem> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 60,
+                      width: 65,
                       child: Text(
                           '${MyLocalizations.of(context)!.tr("ibu")} (${widget.item.ibu.round().toString()})'),
                     ),
@@ -239,7 +239,7 @@ class _NewEditItemState extends State<NewEditItem> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 60,
+                      width: 65,
                       child: Text(MyLocalizations.of(context)!.tr("rating")),
                     ),
                     Padding(
@@ -414,7 +414,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
             return Row(
               children: [
                 SizedBox(
-                    width: 60,
+                    width: 65,
                     child: Text(MyLocalizations.of(context)!.tr("category"))),
                 Padding(
                   padding: const EdgeInsets.all(24),
@@ -505,7 +505,7 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
                 return Row(
                   children: [
                     SizedBox(
-                        width: 60,
+                        width: 65,
                         child: Text(MyLocalizations.of(context)!.tr("brand"))),
                     Padding(
                       padding: const EdgeInsets.only(left: 24),

@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! crud_use {
     () => {
-        use actix_web::{delete, get, patch, post, web, HttpResponse};
+        use actix_web::{delete, get, post, put, web, HttpResponse};
         use diesel::prelude::*;
         use diesel::r2d2::ConnectionManager;
         type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
@@ -73,7 +73,7 @@ macro_rules! crud_create {
 #[macro_export]
 macro_rules! crud_update {
     ($model:ty, $table:tt, $( $parent_model:ty, $parent_table:tt, $parent_table_id:tt ),*) => {
-        #[patch("/{oid}")]
+        #[put("/{oid}")]
         pub async fn update(
             pool: web::Data<DbPool>,
             o: web::Json<$model>,
@@ -81,7 +81,7 @@ macro_rules! crud_update {
         ) -> Result<HttpResponse, ServerError> {
             let conn = pool.get()?;
             let o_value = o.clone();
-            let patched_o = web::block(move || {
+            let put_o = web::block(move || {
                 $(
                     // Check that parent for our object exists
                     crate::schema::$parent_table::dsl::$parent_table.find(o.$parent_table_id).first::<$parent_model>(&conn)?;
@@ -94,7 +94,7 @@ macro_rules! crud_update {
                 $table.filter(id.eq(oid.clone())).first::<$model>(&conn)
             })
             .await?;
-            Ok(HttpResponse::Ok().json(patched_o))
+            Ok(HttpResponse::Ok().json(put_o))
         }
     };
 }

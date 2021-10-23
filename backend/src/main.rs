@@ -53,7 +53,7 @@ async fn main() -> std::io::Result<()> {
         token
     }));
 
-    let bind = "127.0.0.1:8080";
+    let bind = "0.0.0.0:8080";
 
     println!("Starting server at: {}", &bind);
 

@@ -124,7 +124,7 @@ class APICrud<T extends Serialisable> extends Crud<T> {
 
   @override
   update(T val) async {
-    final response = await client.patch(
+    final response = await client.put(
       Uri.parse('$base/$route/${val.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

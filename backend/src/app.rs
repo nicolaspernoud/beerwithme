@@ -50,11 +50,11 @@ macro_rules! create_app {
                     }),
             )
             .app_data($app_config)
-            .wrap(HttpAuthentication::bearer(crate::app::validator))
             .wrap(Cors::permissive())
             .wrap(middleware::Logger::default())
             .service(
                 web::scope("/api/brands")
+                    .wrap(HttpAuthentication::bearer(crate::app::validator))
                     .service(brand::read_all)
                     .service(brand::read)
                     .service(brand::create)
@@ -64,6 +64,7 @@ macro_rules! create_app {
             )
             .service(
                 web::scope("/api/categories")
+                    .wrap(HttpAuthentication::bearer(crate::app::validator))
                     .service(category::read_all)
                     .service(category::read)
                     .service(category::create)
@@ -73,6 +74,7 @@ macro_rules! create_app {
             )
             .service(
                 web::scope("/api/items")
+                    .wrap(HttpAuthentication::bearer(crate::app::validator))
                     .service(item::read_filter)
                     .service(item::read)
                     .service(item::create)
@@ -83,5 +85,6 @@ macro_rules! create_app {
                     .service(item::retrieve_photo)
                     .service(item::delete_photo),
             )
+            .service(actix_files::Files::new("/", "./web").index_file("index.html"))
     }};
 }

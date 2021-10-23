@@ -48,7 +48,7 @@ pub async fn brand_test(
     // Patch the brand
     do_test!(
         app,
-        Method::PATCH,
+        Method::PUT,
         &format!("/api/brands/{}", id),
         &format!("{{\"id\":{}, \"name\":\"  Patched test brand   \",\"description\":\"    Patched test description       \"}}",id),
         StatusCode::OK,

@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = [
   "Nicolas Pernoud <github@ninico.fr>"
 ]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 actix-web = "3"

@@ -119,7 +119,7 @@ pub async fn item_test(
     // Patch the item
     do_test!(
         app,
-        Method::PATCH,
+        Method::PUT,
         &format!("/api/items/{}", id),
         &crate::models::item::Item {
             id: id,

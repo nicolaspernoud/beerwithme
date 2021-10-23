@@ -20,9 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Beer with me!',
-      theme: ThemeData(
-        primarySwatch: Colors.brown,
-      ),
+      theme: ThemeData(primarySwatch: Colors.yellow),
       home: const MyHomePage(title: 'Beer with me!'),
       localizationsDelegates: const [
         MyLocalizationsDelegate(),
