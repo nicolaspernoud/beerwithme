@@ -40,7 +40,7 @@ class _NewEditItemState extends State<NewEditItem> {
   static const JPG_IMAGE_QUALITY = 80;
 
   final _formKey = GlobalKey<FormState>();
-  late Future<Item> itemWithComments;
+  late Future<Item> item;
   late bool isExisting;
   bool submitting = false;
 
@@ -53,10 +53,10 @@ class _NewEditItemState extends State<NewEditItem> {
     super.initState();
     isExisting = widget.item.id > 0;
     if (isExisting) {
-      itemWithComments = widget.crud.readOne(widget.item.id);
+      item = widget.crud.readOne(widget.item.id);
       _imgFromServer(widget.item.id);
     } else {
-      itemWithComments = Future<Item>.value(widget.item);
+      item = Future<Item>.value(widget.item);
     }
   }
 
@@ -201,6 +201,7 @@ class _NewEditItemState extends State<NewEditItem> {
                     SizedBox(
                       width: 239,
                       child: TextFormField(
+                        key: Key(widget.item.barcode),
                         decoration: InputDecoration(
                             labelText:
                                 MyLocalizations.of(context)!.tr("barcode")),
@@ -213,15 +214,17 @@ class _NewEditItemState extends State<NewEditItem> {
                     if (!kIsWeb)
                       IconButton(
                           onPressed: () async {
-                            widget.item.barcode =
-                                await FlutterBarcodeScanner.scanBarcode(
-                                    "#ff6666",
-                                    MyLocalizations.of(context)!.tr("cancel"),
-                                    true,
-                                    ScanMode.BARCODE);
-                            setState(() {});
+                            var code = await FlutterBarcodeScanner.scanBarcode(
+                                "#ffc107",
+                                MyLocalizations.of(context)!.tr("cancel"),
+                                true,
+                                ScanMode.BARCODE);
+                            if (code != '-1') {
+                              widget.item.barcode = code;
+                              setState(() {});
+                            }
                           },
-                          icon: const Icon(Icons.scanner))
+                          icon: const Icon(Icons.qr_code_scanner))
                   ],
                 ),
                 TextFormField(

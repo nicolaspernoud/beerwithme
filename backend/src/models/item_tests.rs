@@ -193,10 +193,11 @@ pub async fn item_test(
             id1, brand_id
         )
     );
+    // Try to apply a filter
     do_test!(
         app,
         Method::GET,
-        "/api/items?name=02",
+        "/api/items?name=02&barcode=",
         "",
         StatusCode::OK,
         format!(

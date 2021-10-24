@@ -84,6 +84,7 @@ crud_create!(
 #[derive(Deserialize)]
 pub struct Params {
     name: String,
+    barcode: String,
 }
 
 #[get("")]
@@ -100,6 +101,7 @@ pub async fn read_filter(
             object = web::block(move || {
                 items
                     .filter(name.like(format!("%{}%", p.name)))
+                    .filter(barcode.like(format!("%{}%", p.barcode)))
                     .order(name.asc())
                     .load::<Item>(&conn)
             })

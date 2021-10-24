@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:frontend/components/star_rating.dart';
 import 'package:frontend/models/brand.dart';
-import 'package:frontend/models/category.dart';
+import 'package:frontend/models/category.dart' as category;
 import 'package:frontend/models/crud.dart';
 import 'package:frontend/models/item.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -55,11 +57,11 @@ class _ItemsState extends State<Items> {
       ),
     );
     setState(() {
-      hasRoleOrOpenSettings(_);
+      hasTokenOrOpenSettings(_);
     });
   }
 
-  void hasRoleOrOpenSettings(_) {
+  void hasTokenOrOpenSettings(_) {
     if (App().hasToken) {
       items = widget.crud.read();
     } else {
@@ -92,10 +94,10 @@ class _ItemsState extends State<Items> {
                 onPressed: () async {
                   await Navigator.push(context,
                       MaterialPageRoute<void>(builder: (BuildContext context) {
-                    return Settings(crud: APICrud<Category>());
+                    return Settings(crud: APICrud<category.Category>());
                   }));
                   setState(() {
-                    hasRoleOrOpenSettings(null);
+                    hasTokenOrOpenSettings(null);
                   });
                 })
           ],
@@ -198,9 +200,10 @@ class _ItemsState extends State<Items> {
                 children: <Widget>[
                   const Icon(Icons.search),
                   SizedBox(
-                    width: 200,
+                    width: 160,
                     child: TextFormField(
-                        initialValue: "",
+                        key: Key(filter),
+                        initialValue: filter,
                         decoration: InputDecoration(
                             labelText:
                                 MyLocalizations.of(context)!.tr("search")),
@@ -209,11 +212,30 @@ class _ItemsState extends State<Items> {
                           filter = value;
                           EasyDebounce.debounce('read-items-filter',
                               const Duration(milliseconds: 250), () {
-                            items = widget.crud.read("name=" + filter);
+                            items = widget.crud.read("name=$filter&barcode=");
                             setState(() {});
                           });
+                        },
+                        onTap: () {
+                          items = widget.crud.read("name=$filter&barcode=");
+                          setState(() {});
                         }),
                   ),
+                  if (!kIsWeb)
+                    IconButton(
+                        onPressed: () async {
+                          var barcode = await FlutterBarcodeScanner.scanBarcode(
+                              "#ffc107",
+                              MyLocalizations.of(context)!.tr("cancel"),
+                              true,
+                              ScanMode.BARCODE);
+                          EasyDebounce.debounce('read-items-filter',
+                              const Duration(milliseconds: 250), () {
+                            items = widget.crud.read("name=&barcode=$barcode");
+                            setState(() {});
+                          });
+                        },
+                        icon: const Icon(Icons.qr_code_scanner))
                 ],
               ),
             ],
@@ -226,11 +248,12 @@ class _ItemsState extends State<Items> {
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return NewEditItem(
           crud: APICrud<Item>(),
-          categoriesCrud: APICrud<Category>(),
+          categoriesCrud: APICrud<category.Category>(),
           brandsCrud: APICrud<Brand>(),
           item: t);
     }));
-    items = widget.crud.read("name=" + filter);
+    filter = "";
+    items = widget.crud.read();
     setState(() {});
   }
 }
