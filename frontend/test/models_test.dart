@@ -26,7 +26,7 @@ void main() {
         brandId: 20,
         name: "a name",
         alcohol: 5.0,
-        ibu: 50,
+        barcode: "a barcode",
         description: "a description",
         rating: 5,
         time: DateTime.now(),

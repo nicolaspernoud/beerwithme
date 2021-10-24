@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   width="512"
-   height="512"
-   viewBox="0 0 135.46666 135.46667"
-   version="1.1"
-   id="svg8"
-   inkscape:version="1.1.1 (eb90963e84, 2021-10-02)"
-   sodipodi:docname="icon.svg"
-   inkscape:export-filename="/home/nicolas/dev/tinytickets/frontend/assets/icon/icon.png"
-   inkscape:export-xdpi="96.000008"
-   inkscape:export-ydpi="96.000008"
+<svg width="512" height="512" viewBox="0 0 135.46666 135.46667" version="1.1" id="svg8" inkscape:version="1.1.1 (eb90963e84, 2021-10-02)" sodipodi:docname="icon.svg" inkscape:export-filename="/home/nicolas/dev/tinytickets/frontend/assets/icon/icon.png" inkscape:export-xdpi="96.000008" inkscape:export-ydpi="96.000008"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -17,130 +7,34 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:dc="http://purl.org/dc/elements/1.1/">
-  <defs
-     id="defs2" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="-168.57143"
-     inkscape:cy="350.71429"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     units="px"
-     inkscape:window-width="3368"
-     inkscape:window-height="1376"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:snap-intersection-paths="false"
-     inkscape:object-paths="false"
-     inkscape:snap-midpoints="true"
-     showguides="false"
-     inkscape:pagecheckerboard="0" />
-  <metadata
-     id="metadata5">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Calque 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-99.158628,-91.711111)">
-    <rect
-       style="fill:#ffeb3b;fill-opacity:1;stroke:#008900;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
-       id="rect1582"
-       width="135.467"
-       height="135.46666"
-       x="99.158463"
-       y="91.711113"
-       rx="15.52"
-       inkscape:export-filename="/home/nicolas/dev/beerwithme/frontend/assets/icon/icon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
-    <g
-       id="g4539"
-       transform="matrix(-0.95939534,-0.30173393,-0.29858849,0.94939409,168.3589,-6.8925982)"
-       inkscape:export-filename="/home/nicolas/dev/beerwithme/frontend/assets/icon/icon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008"
-       style="stroke-width:6.9967174;stroke-miterlimit:4;stroke-dasharray:none">
-      <path
-         id="path2042-2"
-         style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -21.920221,182.68268 c -21.333912,0 -22.049816,-10.56919 -22.049816,-10.56919 l 0.186116,-49.15061 c 0.186111,-6.56726 9.691083,-9.58495 21.416063,-9.58495 11.724979,0 21.48981123,5.37555 21.48980694,10.7601 4.29e-6,5.38454 -9.76482794,8.73908 -21.48980694,8.73908 -11.72498,0 -21.229952,-5.71239 -21.229948,-11.09694 m 21.677585,60.90251 c 20.3616468,0 21.04492473,-10.57287 21.04492473,-10.57287 v -47.98456" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -27.079683,142.95329 c 0,28.69862 0,28.02495 0,28.02495"
-         id="path3912" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -35.237889,138.04388 c 0,28.69861 0,28.02494 0,28.02494"
-         id="path3912-9" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -10.763253,138.04388 c 0,28.69861 0,28.02494 0,28.02494"
-         id="path3912-9-5" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -18.921468,142.95329 c 0,28.69862 0,28.02495 0,28.02495"
-         id="path3912-9-5-8" />
-      <path
-         id="path4148"
-         style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none"
-         d="m -0.87529627,133.03658 c 5.61016987,0 10.15811087,8.74684 10.15810887,19.53662 -2e-6,10.78977 -4.547942,19.53661 -10.15810887,19.53661"
-         sodipodi:nodetypes="csc" />
-    </g>
-    <g
-       id="g4539-7"
-       transform="rotate(13.680657,-29.141322,1042.8853)"
-       inkscape:export-filename="/home/nicolas/dev/beerwithme/frontend/assets/icon/icon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008"
-       style="stroke-width:7;stroke-miterlimit:4;stroke-dasharray:none">
-      <path
-         id="path2042-2-4"
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -21.920221,182.68268 c -21.333912,0 -22.049816,-10.56919 -22.049816,-10.56919 l 0.186116,-49.15061 c 0.186111,-6.56726 9.691083,-9.58495 21.416063,-9.58495 11.724979,0 21.48981123,5.37555 21.48980694,10.7601 4.29e-6,5.38454 -9.76482794,8.73908 -21.48980694,8.73908 -11.72498,0 -21.229952,-5.71239 -21.229948,-11.09694 m 21.677585,60.90251 c 20.3616468,0 21.04492473,-10.57287 21.04492473,-10.57287 v -47.98456" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -27.079683,142.95329 c 0,28.69862 0,28.02495 0,28.02495"
-         id="path3912-6" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -35.237889,138.04388 c 0,28.69861 0,28.02494 0,28.02494"
-         id="path3912-9-0" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -10.763253,138.04388 c 0,28.69861 0,28.02494 0,28.02494"
-         id="path3912-9-5-0" />
-      <path
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m -18.921468,142.95329 c 0,28.69862 0,28.02495 0,28.02495"
-         id="path3912-9-5-8-7" />
-      <path
-         id="path4148-1"
-         style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none"
-         d="m -0.87529627,133.03658 c 5.61016987,0 10.15811087,8.74684 10.15810887,19.53662 -2e-6,10.78977 -4.547942,19.53661 -10.15810887,19.53661"
-         sodipodi:nodetypes="csc" />
-    </g>
-  </g>
+   <defs id="defs2" />
+   <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="0.7" inkscape:cx="-168.57143" inkscape:cy="350.71429" inkscape:document-units="mm" inkscape:current-layer="layer1" inkscape:document-rotation="0" showgrid="false" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" units="px" inkscape:window-width="3368" inkscape:window-height="1376" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:snap-intersection-paths="false" inkscape:object-paths="false" inkscape:snap-midpoints="true" showguides="false" inkscape:pagecheckerboard="0" />
+   <metadata id="metadata5">
+      <rdf:RDF>
+         <cc:Work rdf:about="">
+            <dc:format>image/svg+xml</dc:format>
+            <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+            <dc:title />
+         </cc:Work>
+      </rdf:RDF>
+   </metadata>
+   <g inkscape:label="Calque 1" inkscape:groupmode="layer" id="layer1" transform="translate(-99.158628,-91.711111)">
+      <rect style="fill:#ffc107;fill-opacity:1;stroke:#008900;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none" id="rect1582" width="135.467" height="135.46666" x="99.158463" y="91.711113" rx="15.52" inkscape:export-filename="/home/nicolas/dev/beerwithme/frontend/assets/icon/icon.png" inkscape:export-xdpi="96.000008" inkscape:export-ydpi="96.000008" />
+      <g id="g4539" transform="matrix(-0.95939534,-0.30173393,-0.29858849,0.94939409,168.3589,-6.8925982)" inkscape:export-filename="/home/nicolas/dev/beerwithme/frontend/assets/icon/icon.png" inkscape:export-xdpi="96.000008" inkscape:export-ydpi="96.000008" style="stroke-width:6.9967174;stroke-miterlimit:4;stroke-dasharray:none">
+         <path id="path2042-2" style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -21.920221,182.68268 c -21.333912,0 -22.049816,-10.56919 -22.049816,-10.56919 l 0.186116,-49.15061 c 0.186111,-6.56726 9.691083,-9.58495 21.416063,-9.58495 11.724979,0 21.48981123,5.37555 21.48980694,10.7601 4.29e-6,5.38454 -9.76482794,8.73908 -21.48980694,8.73908 -11.72498,0 -21.229952,-5.71239 -21.229948,-11.09694 m 21.677585,60.90251 c 20.3616468,0 21.04492473,-10.57287 21.04492473,-10.57287 v -47.98456" />
+         <path style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -27.079683,142.95329 c 0,28.69862 0,28.02495 0,28.02495" id="path3912" />
+         <path style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -35.237889,138.04388 c 0,28.69861 0,28.02494 0,28.02494" id="path3912-9" />
+         <path style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -10.763253,138.04388 c 0,28.69861 0,28.02494 0,28.02494" id="path3912-9-5" />
+         <path style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -18.921468,142.95329 c 0,28.69862 0,28.02495 0,28.02495" id="path3912-9-5-8" />
+         <path id="path4148" style="fill:none;stroke:#000000;stroke-width:6.9967174;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none" d="m -0.87529627,133.03658 c 5.61016987,0 10.15811087,8.74684 10.15810887,19.53662 -2e-6,10.78977 -4.547942,19.53661 -10.15810887,19.53661" sodipodi:nodetypes="csc" />
+      </g>
+      <g id="g4539-7" transform="rotate(13.680657,-29.141322,1042.8853)" inkscape:export-filename="/home/nicolas/dev/beerwithme/frontend/assets/icon/icon.png" inkscape:export-xdpi="96.000008" inkscape:export-ydpi="96.000008" style="stroke-width:7;stroke-miterlimit:4;stroke-dasharray:none">
+         <path id="path2042-2-4" style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -21.920221,182.68268 c -21.333912,0 -22.049816,-10.56919 -22.049816,-10.56919 l 0.186116,-49.15061 c 0.186111,-6.56726 9.691083,-9.58495 21.416063,-9.58495 11.724979,0 21.48981123,5.37555 21.48980694,10.7601 4.29e-6,5.38454 -9.76482794,8.73908 -21.48980694,8.73908 -11.72498,0 -21.229952,-5.71239 -21.229948,-11.09694 m 21.677585,60.90251 c 20.3616468,0 21.04492473,-10.57287 21.04492473,-10.57287 v -47.98456" />
+         <path style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -27.079683,142.95329 c 0,28.69862 0,28.02495 0,28.02495" id="path3912-6" />
+         <path style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -35.237889,138.04388 c 0,28.69861 0,28.02494 0,28.02494" id="path3912-9-0" />
+         <path style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -10.763253,138.04388 c 0,28.69861 0,28.02494 0,28.02494" id="path3912-9-5-0" />
+         <path style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" d="m -18.921468,142.95329 c 0,28.69862 0,28.02495 0,28.02495" id="path3912-9-5-8-7" />
+         <path id="path4148-1" style="fill:none;stroke:#000000;stroke-width:7;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none" d="m -0.87529627,133.03658 c 5.61016987,0 10.15811087,8.74684 10.15810887,19.53662 -2e-6,10.78977 -4.547942,19.53661 -10.15810887,19.53661" sodipodi:nodetypes="csc" />
+      </g>
+   </g>
 </svg>

@@ -11,7 +11,7 @@ class StarRating extends StatelessWidget {
 
   const StarRating(
       {Key? key,
-      this.starCount = 10,
+      this.starCount = 5,
       this.rating = 0,
       required this.onRatingChanged,
       required this.color,

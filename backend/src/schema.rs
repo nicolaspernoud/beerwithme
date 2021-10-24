@@ -21,7 +21,7 @@ table! {
         category_id -> Integer,
         name -> Text,
         alcohol -> Float,
-        ibu -> Integer,
+        barcode -> Text,
         description -> Text,
         rating -> Integer,
         time -> Timestamp,
@@ -31,8 +31,4 @@ table! {
 joinable!(items -> brands (brand_id));
 joinable!(items -> categories (category_id));
 
-allow_tables_to_appear_in_same_query!(
-    brands,
-    categories,
-    items,
-);
+allow_tables_to_appear_in_same_query!(brands, categories, items,);

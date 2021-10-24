@@ -181,7 +181,7 @@ class _ItemsState extends State<Items> {
                       brandId: 1,
                       name: "",
                       alcohol: 5.0,
-                      ibu: 0,
+                      barcode: "",
                       description: "",
                       rating: 5,
                       time: DateTime.now(),

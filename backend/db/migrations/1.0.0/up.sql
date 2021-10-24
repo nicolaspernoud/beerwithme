@@ -4,6 +4,14 @@ CREATE TABLE brands (
     description VARCHAR NOT NULL
 );
 
+INSERT INTO
+    brands (name, description)
+VALUES
+    (
+        "Other",
+        "Other beverages."
+    );
+
 CREATE TABLE categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name VARCHAR NOT NULL,
@@ -68,7 +76,7 @@ CREATE TABLE items (
     category_id INTEGER NOT NULL,
     name VARCHAR NOT NULL,
     alcohol REAL NOT NULL,
-    ibu INTEGER NOT NULL,
+    barcode VARCHAR NOT NULL,
     description VARCHAR NOT NULL,
     rating INTEGER NOT NULL,
     time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

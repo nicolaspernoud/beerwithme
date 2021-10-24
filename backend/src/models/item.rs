@@ -44,7 +44,7 @@ pub struct Item {
     pub category_id: i32,
     pub name: String,
     pub alcohol: f32,
-    pub ibu: i32,
+    pub barcode: String,
     pub description: String,
     pub rating: i32,
     pub time: chrono::NaiveDateTime,
@@ -60,7 +60,7 @@ pub struct NewItem {
     pub category_id: i32,
     pub name: String,
     pub alcohol: f32,
-    pub ibu: i32,
+    pub barcode: String,
     pub description: String,
     pub rating: i32,
 }

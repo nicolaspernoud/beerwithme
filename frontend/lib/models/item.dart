@@ -7,7 +7,7 @@ class Item extends Serialisable with EquatableMixin {
   int brandId;
   String name;
   double alcohol;
-  int ibu;
+  String barcode;
   String description;
   int rating;
   DateTime time;
@@ -18,7 +18,7 @@ class Item extends Serialisable with EquatableMixin {
     required this.brandId,
     required this.name,
     required this.alcohol,
-    required this.ibu,
+    required this.barcode,
     required this.description,
     required this.rating,
     required this.time,
@@ -32,7 +32,7 @@ class Item extends Serialisable with EquatableMixin {
       'brand_id': brandId,
       'name': name,
       'alcohol': alcohol,
-      'ibu': ibu,
+      'barcode': barcode,
       'description': description,
       'rating': rating,
       'time': time.toIso8601String(),
@@ -46,7 +46,7 @@ class Item extends Serialisable with EquatableMixin {
       brandId: json['brand_id'],
       name: json['name'],
       alcohol: json['alcohol'],
-      ibu: json['ibu'],
+      barcode: json['barcode'],
       description: json['description'],
       rating: json['rating'],
       time:
@@ -62,7 +62,7 @@ class Item extends Serialisable with EquatableMixin {
       brandId,
       name,
       alcohol,
-      ibu,
+      barcode,
       description,
       rating,
       time

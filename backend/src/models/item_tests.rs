@@ -22,7 +22,7 @@ pub async fn item_test(
                 category_id: {}\n
                 name: {}\n
                 alcohol: {}\n
-                ibu: {}\n
+                barcode: {}\n
                 description: {}\n
                 rating: {}\n
                 ",
@@ -31,7 +31,7 @@ pub async fn item_test(
                 self.category_id,
                 self.name,
                 self.alcohol,
-                self.ibu,
+                self.barcode,
                 self.description,
                 self.rating
             )
@@ -53,7 +53,7 @@ pub async fn item_test(
         app,
         Method::POST,
         "/api/items",
-        r#"{"brand_id":1,"category_id":6,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"ibu":50,"rating":5}"#,
+        r#"{"brand_id":1,"category_id":6,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"barcode":"my barcode","rating":5}"#,
         StatusCode::NOT_FOUND,
         "Item not found"
     );
@@ -73,7 +73,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            r#"{{"brand_id":{},"category_id":106,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"ibu":50,"rating":5}}"#,
+            r#"{{"brand_id":{},"category_id":106,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"barcode":"my barcode","rating":5}}"#,
             brand_id
         ),
         StatusCode::NOT_FOUND,
@@ -86,7 +86,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            r#"{{"brand_id":{},"category_id":6,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"ibu":50,"rating":5}}"#,
+            r#"{{"brand_id":{},"category_id":6,"name":"  Test item  ","description":"    Test description       ","alcohol":5.0,"barcode":"my barcode","rating":5}}"#,
             brand_id
         ),
         StatusCode::CREATED,
@@ -101,7 +101,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            r#"{{"id":{},"brand_id":{},"category_id":6,"name":"Test item","alcohol":5.0,"ibu":50,"description":"Test description","rating":5,"time":"#,
+            r#"{{"id":{},"brand_id":{},"category_id":6,"name":"Test item","alcohol":5.0,"barcode":"my barcode","description":"Test description","rating":5,"time":"#,
             id, brand_id
         )
     );
@@ -127,14 +127,14 @@ pub async fn item_test(
             category_id: 6,
             name: String::from("   Patched name   "),
             alcohol: 5.0,
-            ibu: 50,
+            barcode: String::from("my barcode"),
             description: String::from("   Patched description   "),
             rating: 5,
             time: chrono::Utc::now().naive_utc()
         },
         StatusCode::OK,
         format!(
-            r#"{{"id":{},"brand_id":{},"category_id":6,"name":"Patched name","alcohol":5.0,"ibu":50,"description":"Patched description","rating":5"#,
+            r#"{{"id":{},"brand_id":{},"category_id":6,"name":"Patched name","alcohol":5.0,"barcode":"my barcode","description":"Patched description","rating":5"#,
             id, brand_id
         )
     );
@@ -165,7 +165,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            r#"{{"brand_id":{},"category_id":6, "name":"01_name","description":"01_description","alcohol":5.0,"ibu":50,"rating":5}}"#,
+            r#"{{"brand_id":{},"category_id":6, "name":"01_name","description":"01_description","alcohol":5.0,"barcode":"my barcode","rating":5}}"#,
             brand_id
         ),
         StatusCode::CREATED,
@@ -176,7 +176,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            r#"{{"brand_id":{},"category_id":6, "name":"02_name","description":"02_description","alcohol":5.0,"ibu":50,"rating":5}}"#,
+            r#"{{"brand_id":{},"category_id":6, "name":"02_name","description":"02_description","alcohol":5.0,"barcode":"my barcode","rating":5}}"#,
             brand_id
         ),
         StatusCode::CREATED,
@@ -189,7 +189,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"01_name","alcohol":5.0,"ibu":50,"description":"01_description","rating":5"#,
+            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"01_name","alcohol":5.0,"barcode":"my barcode","description":"01_description","rating":5"#,
             id1, brand_id
         )
     );
@@ -200,7 +200,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"02_name","alcohol":5.0,"ibu":50,"description":"02_description","rating":5"#,
+            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"02_name","alcohol":5.0,"barcode":"my barcode","description":"02_description","rating":5"#,
             id2, brand_id
         )
     );
@@ -225,7 +225,7 @@ pub async fn item_test(
         Method::POST,
         "/api/items",
         &format!(
-            r#"{{"brand_id":{},"category_id":6, "name":"01_name","description":"01_description","alcohol":5.0,"ibu":50,"rating":5}}"#,
+            r#"{{"brand_id":{},"category_id":6, "name":"01_name","description":"01_description","alcohol":5.0,"barcode":"my barcode","rating":5}}"#,
             brand_id
         ),
         StatusCode::CREATED,

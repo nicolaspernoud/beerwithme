@@ -195,28 +195,13 @@ class _NewEditItemState extends State<NewEditItem> {
                     initialIndex: widget.item.brandId,
                   ),
                 ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 65,
-                      child: Text(
-                          '${MyLocalizations.of(context)!.tr("ibu")} (${widget.item.ibu.round().toString()})'),
-                    ),
-                    Expanded(
-                      child: Slider(
-                        value: widget.item.ibu.toDouble(),
-                        min: 0,
-                        max: 100,
-                        divisions: 100,
-                        label: widget.item.ibu.round().toString(),
-                        onChanged: (value) {
-                          setState(() {
-                            widget.item.ibu = value.round();
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                TextFormField(
+                  decoration: InputDecoration(
+                      labelText: MyLocalizations.of(context)!.tr("barcode")),
+                  initialValue: widget.item.barcode,
+                  onChanged: (value) {
+                    widget.item.barcode = value;
+                  },
                 ),
                 TextFormField(
                   maxLines: 3,
