@@ -132,7 +132,7 @@ class _ItemsState extends State<Items> {
                                             onRatingChanged: (rating) {
                                               return;
                                             },
-                                            color: Colors.amberAccent,
+                                            color: Colors.amber,
                                             alterable: false,
                                           ),
                                         ),
@@ -183,7 +183,7 @@ class _ItemsState extends State<Items> {
                       alcohol: 5.0,
                       barcode: "",
                       description: "",
-                      rating: 5,
+                      rating: 2,
                       time: DateTime.now(),
                     ));
                   }),

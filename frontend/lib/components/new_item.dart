@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -195,13 +196,33 @@ class _NewEditItemState extends State<NewEditItem> {
                     initialIndex: widget.item.brandId,
                   ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                      labelText: MyLocalizations.of(context)!.tr("barcode")),
-                  initialValue: widget.item.barcode,
-                  onChanged: (value) {
-                    widget.item.barcode = value;
-                  },
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 239,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            labelText:
+                                MyLocalizations.of(context)!.tr("barcode")),
+                        initialValue: widget.item.barcode,
+                        onChanged: (value) {
+                          widget.item.barcode = value;
+                        },
+                      ),
+                    ),
+                    if (!kIsWeb)
+                      IconButton(
+                          onPressed: () async {
+                            widget.item.barcode =
+                                await FlutterBarcodeScanner.scanBarcode(
+                                    "#ff6666",
+                                    MyLocalizations.of(context)!.tr("cancel"),
+                                    true,
+                                    ScanMode.BARCODE);
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.scanner))
+                  ],
                 ),
                 TextFormField(
                   maxLines: 3,

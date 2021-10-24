@@ -41,6 +41,7 @@ dependencies:
   image_picker: ^0.8.3+3
   equatable: ^2.0.0
   easy_debounce: ^2.0.1
+  flutter_barcode_scanner: ^2.0.0
 
 dev_dependencies:
   flutter_test:

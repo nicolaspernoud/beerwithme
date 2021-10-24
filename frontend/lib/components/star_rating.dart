@@ -23,13 +23,13 @@ class StarRating extends StatelessWidget {
     Icon icon;
     if (index >= rating) {
       icon = Icon(
-        Icons.star_border,
-        color: Colors.brown,
+        Icons.star_border_rounded,
+        color: Colors.grey,
         size: size,
       );
     } else {
       icon = Icon(
-        Icons.star,
+        Icons.star_rounded,
         color: color,
         size: size,
       );
