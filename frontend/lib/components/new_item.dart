@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:flutter/foundation.dart';
@@ -159,29 +160,22 @@ class _NewEditItemState extends State<NewEditItem> {
                     widget.item.name = value;
                   },
                 ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 65,
-                      child: Text(
-                          '${MyLocalizations.of(context)!.tr("alcohol")} (${widget.item.alcohol.toStringAsFixed(1)}°)'),
-                    ),
-                    Expanded(
-                      child: Slider(
-                        value: widget.item.alcohol,
-                        min: 0,
-                        max: 100,
-                        divisions: 1000,
-                        label: widget.item.alcohol.toStringAsFixed(1),
-                        onChanged: (value) {
-                          setState(() {
-                            widget.item.alcohol =
-                                double.parse(value.toStringAsFixed(1));
-                          });
-                        },
-                      ),
-                    ),
+                TextFormField(
+                  initialValue: widget.item.alcohol.toString(),
+                  decoration: InputDecoration(
+                      labelText:
+                          '${MyLocalizations.of(context)!.tr("alcohol")} (°)'),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(
+                        RegExp(r'^(?:0|[1-9]{1}[0-9]{0,1})(?:\.[0-9]{0,1})?$'))
                   ],
+                  onChanged: (text) {
+                    var value = double.tryParse(text);
+                    if (value != null) {
+                      widget.item.alcohol = value;
+                    }
+                  },
                 ),
                 CategoriesDropDown(
                   crud: widget.categoriesCrud,
@@ -198,8 +192,7 @@ class _NewEditItemState extends State<NewEditItem> {
                 ),
                 Row(
                   children: [
-                    SizedBox(
-                      width: 239,
+                    Expanded(
                       child: TextFormField(
                         key: Key(widget.item.barcode),
                         decoration: InputDecoration(
@@ -227,23 +220,26 @@ class _NewEditItemState extends State<NewEditItem> {
                           icon: const Icon(Icons.qr_code_scanner))
                   ],
                 ),
-                TextFormField(
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                      labelText:
-                          MyLocalizations.of(context)!.tr("description")),
-                  // The validator receives the text that the user has entered.
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return MyLocalizations.of(context)!
-                          .tr("please_enter_some_text");
-                    }
-                    return null;
-                  },
-                  initialValue: widget.item.description,
-                  onChanged: (value) {
-                    widget.item.description = value;
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
+                  child: TextFormField(
+                    maxLines: null,
+                    decoration: InputDecoration(
+                        labelText:
+                            MyLocalizations.of(context)!.tr("description")),
+                    // The validator receives the text that the user has entered.
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return MyLocalizations.of(context)!
+                            .tr("please_enter_some_text");
+                      }
+                      return null;
+                    },
+                    initialValue: widget.item.description,
+                    onChanged: (value) {
+                      widget.item.description = value;
+                    },
+                  ),
                 ),
                 Row(
                   children: [
@@ -427,29 +423,23 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
                     child: Text(MyLocalizations.of(context)!.tr("category"))),
                 Padding(
                   padding: const EdgeInsets.all(24),
-                  child: SizedBox(
-                    width: 150,
-                    child: DropdownButton<int>(
-                      value: _index,
-                      items: snapshot.data!.map((a) {
-                        return DropdownMenuItem<int>(
-                          value: a.id,
-                          child: SizedBox(
-                            width: 125,
-                            child: Text(
-                              a.name,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _index = value!;
-                        });
-                        widget.callback(value!);
-                      },
-                    ),
+                  child: DropdownButton<int>(
+                    value: _index,
+                    items: snapshot.data!.map((a) {
+                      return DropdownMenuItem<int>(
+                        value: a.id,
+                        child: Text(
+                          a.name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _index = value!;
+                      });
+                      widget.callback(value!);
+                    },
                   ),
                 ),
               ],
@@ -518,29 +508,23 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
                         child: Text(MyLocalizations.of(context)!.tr("brand"))),
                     Padding(
                       padding: const EdgeInsets.only(left: 24),
-                      child: SizedBox(
-                        width: 150,
-                        child: DropdownButton<int>(
-                          value: _index,
-                          items: snapshot.data!.map((a) {
-                            return DropdownMenuItem<int>(
-                              value: a.id,
-                              child: SizedBox(
-                                width: 125,
-                                child: Text(
-                                  a.name,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _index = value!;
-                            });
-                            widget.callback(value!);
-                          },
-                        ),
+                      child: DropdownButton<int>(
+                        value: _index,
+                        items: snapshot.data!.map((a) {
+                          return DropdownMenuItem<int>(
+                            value: a.id,
+                            child: Text(
+                              a.name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _index = value!;
+                          });
+                          widget.callback(value!);
+                        },
                       ),
                     ),
                     IconButton(
