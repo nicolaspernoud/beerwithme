@@ -124,29 +124,21 @@ class _ItemsState extends State<Items> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ListTile(
-                                    leading: const Icon(Icons.sports_bar),
-                                    title: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: StarRating(
-                                            rating: itms.elementAt(i).rating,
-                                            onRatingChanged: (rating) {
-                                              return;
-                                            },
-                                            color: Colors.amber,
-                                            alterable: false,
-                                          ),
-                                        ),
-                                        Text(itms.elementAt(i).name),
-                                      ],
-                                    ),
-                                    subtitle: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        itms.elementAt(i).description,
-                                        maxLines: 2,
+                                    leading: SizedBox(
+                                      width: 75,
+                                      child: StarRating(
+                                        rating: itms.elementAt(i).rating,
+                                        onRatingChanged: (rating) {
+                                          return;
+                                        },
+                                        color: Colors.amber,
+                                        alterable: false,
                                       ),
+                                    ),
+                                    title: Text(itms.elementAt(i).name),
+                                    subtitle: Text(
+                                      itms.elementAt(i).description,
+                                      maxLines: 2,
                                     ))
                               ],
                             ),

@@ -46,8 +46,11 @@ class _SettingsState extends State<Settings> {
                         ? await launch(_url)
                         : throw 'Could not launch $_url';
                   },
-                  child: Text(
-                      MyLocalizations.of(context)!.tr("get_latest_release")),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Text(
+                        MyLocalizations.of(context)!.tr("get_latest_release")),
+                  ),
                 ),
               ),
               ...[
