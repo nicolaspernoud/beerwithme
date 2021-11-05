@@ -30,7 +30,7 @@ Future<void> main() async {
     await tester.tap(find.text("OK"));
     await tester.pumpAndSettle();
     // Check that we display the ticket list if a user token is set
-    expect(find.text("01_name"), findsOneWidget);
+    expect(find.text("01_name - Test brand"), findsOneWidget);
 
     // To print the widget tree :
     //debugDumpApp();

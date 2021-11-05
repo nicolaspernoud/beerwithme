@@ -6,7 +6,6 @@ import 'package:frontend/models/brand.dart';
 import 'package:frontend/models/category.dart' as category;
 import 'package:frontend/models/crud.dart';
 import 'package:frontend/models/item.dart';
-import 'package:easy_debounce/easy_debounce.dart';
 
 import '../globals.dart';
 import '../i18n.dart';
@@ -135,7 +134,9 @@ class _ItemsState extends State<Items> {
                                         alterable: false,
                                       ),
                                     ),
-                                    title: Text(itms.elementAt(i).name),
+                                    title: Text(itms.elementAt(i).name +
+                                        " - " +
+                                        itms.elementAt(i).brandName!),
                                     subtitle: Text(
                                       itms.elementAt(i).description,
                                       maxLines: 2,
@@ -161,78 +162,78 @@ class _ItemsState extends State<Items> {
                 ),
               ))
             : null,
-        bottomNavigationBar: BottomAppBar(
-            child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    _edit(Item(
-                      id: 0,
-                      categoryId: 1,
-                      brandId: 1,
-                      name: "",
-                      alcohol: 5.0,
-                      barcode: "",
-                      description: "",
-                      rating: 2,
-                      time: DateTime.now(),
-                    ));
-                  }),
-              Text(MyLocalizations.of(context)!.tr("create_item")),
-              Expanded(
-                child: Container(
-                  height: 50,
+        bottomNavigationBar: StickyBottomAppBar(
+          child: BottomAppBar(
+              child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      _edit(Item(
+                        id: 0,
+                        categoryId: 1,
+                        brandId: 1,
+                        name: "",
+                        alcohol: 5.0,
+                        barcode: "",
+                        description: "",
+                        rating: 2,
+                        time: DateTime.now(),
+                      ));
+                    }),
+                Text(MyLocalizations.of(context)!.tr("create_item")),
+                Expanded(
+                  child: Container(
+                    height: 50,
+                  ),
                 ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Icon(Icons.search),
-                  SizedBox(
-                    width: 160,
-                    child: TextFormField(
-                        key: Key(filter),
-                        initialValue: filter,
-                        decoration: InputDecoration(
-                            labelText:
-                                MyLocalizations.of(context)!.tr("search")),
-                        // The validator receives the text that the user has entered.
-                        onChanged: (value) {
-                          filter = value;
-                          EasyDebounce.debounce('read-items-filter',
-                              const Duration(milliseconds: 250), () {
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Icon(Icons.search),
+                    SizedBox(
+                      width: 160,
+                      child: TextFormField(
+                          key: Key(filter),
+                          initialValue: filter,
+                          decoration: InputDecoration(
+                              labelText:
+                                  MyLocalizations.of(context)!.tr("search")),
+                          // The validator receives the text that the user has entered.
+                          onFieldSubmitted: (value) {
+                            filter = value;
+                            setState(() {
+                              items = widget.crud.read("name=$filter&barcode=");
+                            });
+                          },
+                          onTap: () {
                             items = widget.crud.read("name=$filter&barcode=");
                             setState(() {});
-                          });
-                        },
-                        onTap: () {
-                          items = widget.crud.read("name=$filter&barcode=");
-                          setState(() {});
-                        }),
-                  ),
-                  if (!kIsWeb)
-                    IconButton(
-                        onPressed: () async {
-                          var barcode = await FlutterBarcodeScanner.scanBarcode(
-                              "#ffc107",
-                              MyLocalizations.of(context)!.tr("cancel"),
-                              true,
-                              ScanMode.BARCODE);
-                          EasyDebounce.debounce('read-items-filter',
-                              const Duration(milliseconds: 250), () {
-                            items = widget.crud.read("name=&barcode=$barcode");
-                            setState(() {});
-                          });
-                        },
-                        icon: const Icon(Icons.qr_code_scanner))
-                ],
-              ),
-            ],
-          ),
-        )));
+                          }),
+                    ),
+                    if (!kIsWeb)
+                      IconButton(
+                          onPressed: () async {
+                            var barcode =
+                                await FlutterBarcodeScanner.scanBarcode(
+                                    "#ffc107",
+                                    MyLocalizations.of(context)!.tr("cancel"),
+                                    true,
+                                    ScanMode.BARCODE);
+                            setState(() {
+                              items =
+                                  widget.crud.read("name=&barcode=$barcode");
+                            });
+                          },
+                          icon: const Icon(Icons.qr_code_scanner))
+                  ],
+                ),
+              ],
+            ),
+          )),
+        ));
   }
 
   Future<void> _edit(t) async {
@@ -252,4 +253,17 @@ class _ItemsState extends State<Items> {
 
 String formatTime(DateTime d) {
   return "${d.year.toString()}-${d.month.toString().padLeft(2, "0")}-${d.day.toString().padLeft(2, "0")}";
+}
+
+class StickyBottomAppBar extends StatelessWidget {
+  final BottomAppBar child;
+  const StickyBottomAppBar({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
+      child: child,
+    );
+  }
 }

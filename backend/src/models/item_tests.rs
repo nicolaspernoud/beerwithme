@@ -189,7 +189,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"01_name","alcohol":5.0,"barcode":"my barcode","description":"01_description","rating":5"#,
+            r#"[{{"brand_name":"Test brand","id":{},"brand_id":{},"category_id":6,"name":"01_name","alcohol":5.0,"barcode":"my barcode","description":"01_description","rating":5"#,
             id1, brand_id
         )
     );
@@ -201,7 +201,7 @@ pub async fn item_test(
         "",
         StatusCode::OK,
         format!(
-            r#"[{{"id":{},"brand_id":{},"category_id":6,"name":"02_name","alcohol":5.0,"barcode":"my barcode","description":"02_description","rating":5"#,
+            r#"[{{"brand_name":"Test brand","id":{},"brand_id":{},"category_id":6,"name":"02_name","alcohol":5.0,"barcode":"my barcode","description":"02_description","rating":5"#,
             id2, brand_id
         )
     );

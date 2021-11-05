@@ -11,18 +11,20 @@ class Item extends Serialisable with EquatableMixin {
   String description;
   int rating;
   DateTime time;
+  String? brandName;
 
-  Item({
-    required id,
-    required this.categoryId,
-    required this.brandId,
-    required this.name,
-    required this.alcohol,
-    required this.barcode,
-    required this.description,
-    required this.rating,
-    required this.time,
-  }) : super(id: id);
+  Item(
+      {required id,
+      required this.categoryId,
+      required this.brandId,
+      required this.name,
+      required this.alcohol,
+      required this.barcode,
+      required this.description,
+      required this.rating,
+      required this.time,
+      this.brandName})
+      : super(id: id);
 
   @override
   Map<String, dynamic> toJson() {
@@ -41,17 +43,18 @@ class Item extends Serialisable with EquatableMixin {
 
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
-      id: json['id'],
-      categoryId: json['category_id'],
-      brandId: json['brand_id'],
-      name: json['name'],
-      alcohol: json['alcohol'],
-      barcode: json['barcode'],
-      description: json['description'],
-      rating: json['rating'],
-      time:
-          json['time'] != null ? DateTime.parse(json['time']) : DateTime.now(),
-    );
+        id: json['id'],
+        categoryId: json['category_id'],
+        brandId: json['brand_id'],
+        name: json['name'],
+        alcohol: json['alcohol'],
+        barcode: json['barcode'],
+        description: json['description'],
+        rating: json['rating'],
+        time: json['time'] != null
+            ? DateTime.parse(json['time'])
+            : DateTime.now(),
+        brandName: json['brand_name']);
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/components/brands.dart';
 import 'package:frontend/models/brand.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:frontend/components/items.dart';
@@ -16,7 +17,6 @@ import 'package:image/image.dart' as image;
 
 import '../globals.dart';
 import '../i18n.dart';
-import 'new_brand.dart';
 import 'star_rating.dart';
 
 class NewEditItem extends StatefulWidget {
@@ -184,7 +184,7 @@ class _NewEditItemState extends State<NewEditItem> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 24),
-                  child: BrandsDropDown(
+                  child: BrandPicker(
                     crud: widget.brandsCrud,
                     callback: (val) => widget.item.brandId = val,
                     initialIndex: widget.item.brandId,
@@ -455,11 +455,11 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
   }
 }
 
-class BrandsDropDown extends StatefulWidget {
+class BrandPicker extends StatefulWidget {
   final IntCallback callback;
   final Crud crud;
   final int initialIndex;
-  const BrandsDropDown({
+  const BrandPicker({
     Key? key,
     required this.crud,
     required this.callback,
@@ -467,10 +467,10 @@ class BrandsDropDown extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _BrandsDropDownState createState() => _BrandsDropDownState();
+  _BrandPickerState createState() => _BrandPickerState();
 }
 
-class _BrandsDropDownState extends State<BrandsDropDown> {
+class _BrandPickerState extends State<BrandPicker> {
   late Future<List<Brand>> brands;
   late int _index;
 
@@ -499,40 +499,34 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
                     break;
                   }
                 }
-                if (!indexExists) _index = minID;
-                widget.callback(_index);
+                if (!indexExists) {
+                  _index = minID;
+                  widget.callback(_index);
+                }
+                var currentBrand = snapshot.data!
+                    .singleWhere((element) => element.id == _index);
+
                 return Row(
                   children: [
                     SizedBox(
                         width: 65,
                         child: Text(MyLocalizations.of(context)!.tr("brand"))),
                     Padding(
-                      padding: const EdgeInsets.only(left: 24),
-                      child: DropdownButton<int>(
-                        value: _index,
-                        items: snapshot.data!.map((a) {
-                          return DropdownMenuItem<int>(
-                            value: a.id,
-                            child: Text(
-                              a.name,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _index = value!;
-                          });
-                          widget.callback(value!);
-                        },
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          _editBrand(snapshot.data!
-                              .singleWhere((element) => element.id == _index));
-                        },
-                        icon: const Icon(Icons.edit))
+                        padding: const EdgeInsets.only(left: 24),
+                        child: OutlinedButton(
+                          child: Text(
+                            currentBrand.name,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () async {
+                            _index = (await _openBrands(context))!;
+                            widget.callback(_index);
+
+                            setState(() {
+                              brands = widget.crud.read();
+                            });
+                          },
+                        )),
                   ],
                 );
               } else if (snapshot.hasError) {
@@ -543,22 +537,14 @@ class _BrandsDropDownState extends State<BrandsDropDown> {
                 child: Text(MyLocalizations.of(context)!.tr("no_brands")),
               );
             }),
-        IconButton(
-            onPressed: () {
-              _editBrand(Brand(id: 0, name: "", description: ""));
-            },
-            icon: const Icon(Icons.add))
       ],
     );
   }
 
-  Future<void> _editBrand(Brand c) async {
-    await Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      return NewEditBrand(crud: APICrud<Brand>(), brand: c);
+  Future<int?> _openBrands(BuildContext context) async {
+    return await Navigator.push(context,
+        MaterialPageRoute<int>(builder: (BuildContext context) {
+      return Brands(crud: APICrud<Brand>());
     }));
-    setState(() {
-      brands = widget.crud.read();
-    });
   }
 }

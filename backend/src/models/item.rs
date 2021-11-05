@@ -87,6 +87,13 @@ pub struct Params {
     barcode: String,
 }
 
+#[derive(Serialize)]
+struct OutItem {
+    brand_name: String,
+    #[serde(flatten)]
+    item: Item,
+}
+
 #[get("")]
 pub async fn read_filter(
     req: HttpRequest,
@@ -94,24 +101,39 @@ pub async fn read_filter(
 ) -> Result<HttpResponse, ServerError> {
     let conn = pool.get()?;
     let params = web::Query::<Params>::from_query(req.query_string());
-    let object: Vec<Item>;
+    let object: Vec<(Item, Brand)>;
     use crate::schema::items::dsl::*;
     match params {
         Ok(p) => {
             object = web::block(move || {
                 items
+                    .inner_join(crate::schema::brands::table)
                     .filter(name.like(format!("%{}%", p.name)))
+                    .or_filter(crate::schema::brands::name.like(format!("%{}%", p.name)))
                     .filter(barcode.like(format!("%{}%", p.barcode)))
-                    .order(name.asc())
-                    .load::<Item>(&conn)
+                    .order((rating.desc(), name.asc()))
+                    .load::<(Item, Brand)>(&conn)
             })
             .await?;
         }
         Err(_) => {
-            object = web::block(move || items.order(name.asc()).load::<Item>(&conn)).await?;
+            object = web::block(move || {
+                items
+                    .inner_join(crate::schema::brands::table)
+                    .order((rating.desc(), name.asc()))
+                    .load::<(Item, Brand)>(&conn)
+            })
+            .await?;
         }
     }
-    Ok(HttpResponse::Ok().json(object))
+    let mut out_items: Vec<OutItem> = Vec::new();
+    for o in object {
+        out_items.push(OutItem {
+            item: o.0,
+            brand_name: o.1.name,
+        })
+    }
+    Ok(HttpResponse::Ok().json(out_items))
 }
 
 crud_read!(Item, items);
