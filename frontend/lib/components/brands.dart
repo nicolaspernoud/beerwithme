@@ -76,7 +76,7 @@ class _BrandsState extends State<Brands> {
                                       child: InkWell(
                                     splashColor: Colors.blue.withAlpha(30),
                                     onTap: () {
-                                      Navigator.pop(context, a.id);
+                                      Navigator.pop(context, a);
                                     },
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,

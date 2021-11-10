@@ -42,6 +42,7 @@ class _NewEditItemState extends State<NewEditItem> {
 
   final _formKey = GlobalKey<FormState>();
   late Future<Item> item;
+  late Future<Brand> selectedBrand;
   late bool isExisting;
   bool submitting = false;
 
@@ -55,9 +56,11 @@ class _NewEditItemState extends State<NewEditItem> {
     isExisting = widget.item.id > 0;
     if (isExisting) {
       item = widget.crud.readOne(widget.item.id);
+      selectedBrand = widget.brandsCrud.readOne(widget.item.brandId);
       _imgFromServer(widget.item.id);
     } else {
       item = Future<Item>.value(widget.item);
+      selectedBrand = widget.brandsCrud.readOne(1);
     }
   }
 
@@ -183,13 +186,43 @@ class _NewEditItemState extends State<NewEditItem> {
                   initialIndex: widget.item.categoryId,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
-                  child: BrandPicker(
-                    crud: widget.brandsCrud,
-                    callback: (val) => widget.item.brandId = val,
-                    initialIndex: widget.item.brandId,
-                  ),
-                ),
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: FutureBuilder<Brand>(
+                        future: selectedBrand,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Row(
+                              children: [
+                                SizedBox(
+                                    width: 65,
+                                    child: Text(MyLocalizations.of(context)!
+                                        .tr("brand"))),
+                                Padding(
+                                    padding: const EdgeInsets.only(left: 24),
+                                    child: OutlinedButton(
+                                      child: Text(
+                                        snapshot.data!.name,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                      onPressed: () async {
+                                        var b = await _openBrands(context);
+                                        if (b != null) {
+                                          selectedBrand =
+                                              Future<Brand>.value(b);
+                                          widget.item.brandId = b.id;
+                                          setState(() {});
+                                        }
+                                      },
+                                    )),
+                              ],
+                            );
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                                MyLocalizations.of(context)!.tr("no_brands")),
+                          );
+                        })),
                 Row(
                   children: [
                     Expanded(
@@ -455,96 +488,9 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
   }
 }
 
-class BrandPicker extends StatefulWidget {
-  final IntCallback callback;
-  final Crud crud;
-  final int initialIndex;
-  const BrandPicker({
-    Key? key,
-    required this.crud,
-    required this.callback,
-    required this.initialIndex,
-  }) : super(key: key);
-
-  @override
-  _BrandPickerState createState() => _BrandPickerState();
-}
-
-class _BrandPickerState extends State<BrandPicker> {
-  late Future<List<Brand>> brands;
-  late int _index;
-
-  @override
-  void initState() {
-    super.initState();
-    brands = widget.crud.read();
-    _index = widget.initialIndex;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        FutureBuilder<List<Brand>>(
-            future: brands,
-            builder: (context, snapshot) {
-              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                // Check that index exists
-                var minID = snapshot.data!.first.id;
-                var indexExists = false;
-                for (final e in snapshot.data!) {
-                  if (e.id < minID) minID = e.id;
-                  if (_index == e.id) {
-                    indexExists = true;
-                    break;
-                  }
-                }
-                if (!indexExists) {
-                  _index = minID;
-                  widget.callback(_index);
-                }
-                var currentBrand = snapshot.data!
-                    .singleWhere((element) => element.id == _index);
-
-                return Row(
-                  children: [
-                    SizedBox(
-                        width: 65,
-                        child: Text(MyLocalizations.of(context)!.tr("brand"))),
-                    Padding(
-                        padding: const EdgeInsets.only(left: 24),
-                        child: OutlinedButton(
-                          child: Text(
-                            currentBrand.name,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          onPressed: () async {
-                            _index = (await _openBrands(context))!;
-                            widget.callback(_index);
-
-                            setState(() {
-                              brands = widget.crud.read();
-                            });
-                          },
-                        )),
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
-              }
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(MyLocalizations.of(context)!.tr("no_brands")),
-              );
-            }),
-      ],
-    );
-  }
-
-  Future<int?> _openBrands(BuildContext context) async {
-    return await Navigator.push(context,
-        MaterialPageRoute<int>(builder: (BuildContext context) {
-      return Brands(crud: APICrud<Brand>());
-    }));
-  }
+Future<Brand?> _openBrands(BuildContext context) async {
+  return await Navigator.push(context,
+      MaterialPageRoute<Brand>(builder: (BuildContext context) {
+    return Brands(crud: APICrud<Brand>());
+  }));
 }
