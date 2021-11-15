@@ -9,6 +9,7 @@ pub enum ServerError {
     R2D2,
     Diesel,
     DieselNotFound,
+    DieselDatabaseError(String),
     BlockingCanceled,
     Image,
 }
@@ -19,6 +20,7 @@ impl std::fmt::Display for ServerError {
             ServerError::R2D2 => write!(f, "R2D2 error"),
             ServerError::Diesel => write!(f, "Diesel error"),
             ServerError::DieselNotFound => write!(f, "Item not found"),
+            ServerError::DieselDatabaseError(m) => write!(f, "{}", m),
             ServerError::BlockingCanceled => write!(f, "Blocking error"),
             ServerError::Image => write!(f, "Image error"),
         }
@@ -33,6 +35,7 @@ impl ResponseError for ServerError {
             ServerError::R2D2 => HttpResponse::InternalServerError().body("R2D2 error"),
             ServerError::Diesel => HttpResponse::InternalServerError().body("Diesel error"),
             ServerError::DieselNotFound => HttpResponse::NotFound().body("Item not found"),
+            ServerError::DieselDatabaseError(m) => HttpResponse::NotFound().body(m),
             ServerError::BlockingCanceled => {
                 HttpResponse::InternalServerError().body("Blocking error")
             }
@@ -47,22 +50,26 @@ impl From<r2d2::Error> for ServerError {
     }
 }
 
+fn server_error_from_diesel_error(err: diesel::result::Error) -> ServerError {
+    match err {
+        diesel::result::Error::NotFound => ServerError::DieselNotFound,
+        diesel::result::Error::DatabaseError(_, info) => {
+            ServerError::DieselDatabaseError(info.message().to_string())
+        }
+        _ => ServerError::Diesel,
+    }
+}
+
 impl From<diesel::result::Error> for ServerError {
     fn from(err: diesel::result::Error) -> ServerError {
-        match err {
-            diesel::result::Error::NotFound => ServerError::DieselNotFound,
-            _ => ServerError::Diesel,
-        }
+        server_error_from_diesel_error(err)
     }
 }
 
 impl From<BlockingError<diesel::result::Error>> for ServerError {
     fn from(err: BlockingError<diesel::result::Error>) -> ServerError {
         match err {
-            BlockingError::Error(e) => match e {
-                diesel::result::Error::NotFound => ServerError::DieselNotFound,
-                _ => ServerError::Diesel,
-            },
+            BlockingError::Error(e) => server_error_from_diesel_error(e),
             BlockingError::Canceled => ServerError::BlockingCanceled,
         }
     }

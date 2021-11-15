@@ -12,6 +12,13 @@ pub async fn brand_test(
 
     let mut app = test::init_service(create_app!(pool, app_config)).await;
 
+    // Delete all the brands
+    let req = test::TestRequest::delete()
+        .header("Authorization", "Bearer 0101")
+        .uri("/api/brands")
+        .to_request();
+    test::call_service(&mut app, req).await;
+
     // Create a brand
     let id = do_test_extract_id!(
         app,
@@ -20,6 +27,16 @@ pub async fn brand_test(
         "{\"name\":\"  Test brand  \",\"description\":\"    Test description       \"}",
         StatusCode::CREATED,
         "{\"id\""
+    );
+
+    // Try to create a brand with the same name
+    do_test!(
+        app,
+        Method::POST,
+        "/api/brands",
+        "{\"name\":\"  Test brand  \",\"description\":\"    Test description       \"}",
+        StatusCode::NOT_FOUND,
+        "UNIQUE constraint failed: brands.name"
     );
 
     // Get a brand
