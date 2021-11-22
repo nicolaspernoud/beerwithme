@@ -26,7 +26,7 @@ class Items extends StatefulWidget {
 
 class _ItemsState extends State<Items> {
   late Future<List<Item>> items;
-  String filter = "";
+  String _filter = "";
 
   @override
   void initState() {
@@ -193,25 +193,29 @@ class _ItemsState extends State<Items> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     const Icon(Icons.search),
-                    SizedBox(
-                      width: 160,
-                      child: TextFormField(
-                          key: Key(filter),
-                          initialValue: filter,
-                          decoration: InputDecoration(
-                              labelText:
-                                  MyLocalizations.of(context)!.tr("search")),
-                          // The validator receives the text that the user has entered.
-                          onFieldSubmitted: (value) {
-                            filter = value;
-                            setState(() {
-                              items = widget.crud.read("name=$filter&barcode=");
-                            });
-                          },
-                          onTap: () {
-                            items = widget.crud.read("name=$filter&barcode=");
-                            setState(() {});
-                          }),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: SizedBox(
+                        width: 160,
+                        child: TextFormField(
+                            initialValue: _filter,
+                            decoration: InputDecoration(
+                                labelText:
+                                    MyLocalizations.of(context)!.tr("search")),
+                            // The validator receives the text that the user has entered.
+                            onChanged: (value) {
+                              _filter = value;
+                              setState(() {
+                                items =
+                                    widget.crud.read("name=$_filter&barcode=");
+                              });
+                            },
+                            onTap: () {
+                              items =
+                                  widget.crud.read("name=$_filter&barcode=");
+                              setState(() {});
+                            }),
+                      ),
                     ),
                     if (!kIsWeb)
                       IconButton(
@@ -245,9 +249,9 @@ class _ItemsState extends State<Items> {
           brandsCrud: APICrud<Brand>(),
           item: t);
     }));
-    filter = "";
-    items = widget.crud.read();
-    setState(() {});
+    setState(() {
+      items = widget.crud.read("name=$_filter&barcode=");
+    });
   }
 }
 
