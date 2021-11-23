@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ import 'package:image/image.dart' as image;
 
 import '../globals.dart';
 import '../i18n.dart';
+import 'scanner.dart';
 import 'star_rating.dart';
 
 class NewEditItem extends StatefulWidget {
@@ -240,11 +240,11 @@ class _NewEditItemState extends State<NewEditItem> {
                     if (!kIsWeb)
                       IconButton(
                           onPressed: () async {
-                            var code = await FlutterBarcodeScanner.scanBarcode(
-                                "#ffc107",
-                                MyLocalizations.of(context)!.tr("cancel"),
-                                true,
-                                ScanMode.BARCODE);
+                            final code = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const BarcodeScanner()),
+                            );
                             if (code != '-1') {
                               widget.item.barcode = code;
                               setState(() {});

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:frontend/components/star_rating.dart';
 import 'package:frontend/models/brand.dart';
 import 'package:frontend/models/category.dart' as category;
@@ -10,6 +9,7 @@ import 'package:frontend/models/item.dart';
 import '../globals.dart';
 import '../i18n.dart';
 import 'new_item.dart';
+import 'scanner.dart';
 import 'settings.dart';
 
 class Items extends StatefulWidget {
@@ -220,16 +220,17 @@ class _ItemsState extends State<Items> {
                     if (!kIsWeb)
                       IconButton(
                           onPressed: () async {
-                            var barcode =
-                                await FlutterBarcodeScanner.scanBarcode(
-                                    "#ffc107",
-                                    MyLocalizations.of(context)!.tr("cancel"),
-                                    true,
-                                    ScanMode.BARCODE);
-                            setState(() {
-                              items =
-                                  widget.crud.read("name=&barcode=$barcode");
-                            });
+                            final barcode = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const BarcodeScanner()),
+                            );
+                            if (barcode != null) {
+                              setState(() {
+                                items =
+                                    widget.crud.read("name=&barcode=$barcode");
+                              });
+                            }
                           },
                           icon: const Icon(Icons.qr_code_scanner))
                   ],

@@ -100,7 +100,7 @@ class _NewEditBrandState extends State<NewEditBrand> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(msg)),
                           );
-                          Navigator.pop(context);
+                          Navigator.pop(context, widget.brand);
                         }
                       },
                       child: Padding(

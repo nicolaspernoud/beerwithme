@@ -15,12 +15,19 @@ class Brands extends StatefulWidget {
 
 class _BrandsState extends State<Brands> {
   late Future<List<Brand>> brands;
-  String filter = "";
+  final searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     brands = widget.crud.read();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,14 +57,13 @@ class _BrandsState extends State<Brands> {
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: TextFormField(
-                        initialValue: filter,
+                        controller: searchController,
+                        onChanged: (text) {
+                          setState(() {});
+                        },
                         decoration: InputDecoration(
                             labelText:
                                 MyLocalizations.of(context)!.tr("search")),
-                        onChanged: (value) {
-                          filter = value;
-                          setState(() {});
-                        },
                       ),
                     ),
                   ),
@@ -71,7 +77,8 @@ class _BrandsState extends State<Brands> {
                           ...snapshot.data!
                               .where((element) => element.name
                                   .toLowerCase()
-                                  .contains(filter.toLowerCase()))
+                                  .contains(
+                                      searchController.text.toLowerCase()))
                               .map((a) => Card(
                                       child: InkWell(
                                     splashColor: Colors.blue.withAlpha(30),
@@ -122,11 +129,12 @@ class _BrandsState extends State<Brands> {
   }
 
   Future<void> _editBrand(Brand b) async {
-    await Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+    var br = await Navigator.push(context,
+        MaterialPageRoute<Brand>(builder: (BuildContext context) {
       return NewEditBrand(crud: APICrud<Brand>(), brand: b);
     }));
     setState(() {
+      searchController.text = br!.name;
       brands = widget.crud.read();
     });
   }
