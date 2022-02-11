@@ -2,7 +2,7 @@
 # Stage 1 : Backend build #
 ###########################
 
-FROM rust:1.56.0-bullseye as backend-builder
+FROM rust:1.58.1 as backend-builder
 
 RUN rustup target add x86_64-unknown-linux-musl
 RUN apt update && apt install -y musl-tools musl-dev
@@ -27,22 +27,19 @@ COPY ./backend .
 RUN cargo test
 RUN cargo build --target x86_64-unknown-linux-musl --release
 RUN mkdir -p /app/db/
-RUN chown -Rf "${UID}":"${UID}"  /app/db/
+RUN chown -Rf "${UID}":"${UID}" /app/db/
 RUN mkdir -p /app/data/
-RUN chown -Rf "${UID}":"${UID}"  /app/data/
-
+RUN chown -Rf "${UID}":"${UID}" /app/data/
 
 ############################
 # Stage 2 : Frontend build #
 ############################
 
-FROM cirrusci/flutter:stable as frontend-builder
+FROM cirrusci/flutter:2.10.0 as frontend-builder
 WORKDIR /build
 COPY ./frontend .
 RUN flutter pub get
-RUN flutter test && \
-    flutter build web
-
+RUN flutter test && flutter build web
 
 #########################
 # Stage 3 : Final image #
