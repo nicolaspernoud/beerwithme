@@ -101,7 +101,7 @@ pub async fn read_filter(
 ) -> Result<HttpResponse, ServerError> {
     let conn = pool.get()?;
     let params = web::Query::<Params>::from_query(req.query_string());
-    let object: Vec<(Item, Brand)>;
+    let object;
     use crate::schema::items::dsl::*;
     match params {
         Ok(p) => {
@@ -126,14 +126,19 @@ pub async fn read_filter(
             .await?;
         }
     }
-    let mut out_items: Vec<OutItem> = Vec::new();
-    for o in object {
-        out_items.push(OutItem {
-            item: o.0,
-            brand_name: o.1.name,
-        })
+    if let Ok(object) = object {
+        let mut out_items: Vec<OutItem> = Vec::new();
+        for o in object {
+            out_items.push(OutItem {
+                item: o.0,
+                brand_name: o.1.name,
+            })
+        }
+        Ok(HttpResponse::Ok().json(out_items))
+    } else {
+        let res = HttpResponse::NotFound().body(format!("No objects found"));
+        Ok(res)
     }
-    Ok(HttpResponse::Ok().json(out_items))
 }
 
 crud_read!(Item, items);
@@ -156,7 +161,8 @@ pub async fn delete(
 ) -> Result<HttpResponse, ServerError> {
     let conn = pool.get()?;
     let oid = *oid;
-    web::block(move || {
+    let id = oid.clone();
+    let d = web::block(move || {
         use crate::schema::items::dsl::*;
         let deleted = diesel::delete(items).filter(id.eq(oid)).execute(&conn)?;
         match deleted {
@@ -166,7 +172,12 @@ pub async fn delete(
     })
     .await?;
     let _ = web::block(move || fs::remove_file(photo_filename(oid))).await;
-    Ok(HttpResponse::Ok().body(format!("Deleted object with id: {}", oid)))
+    if let Ok(_) = d {
+        Ok(HttpResponse::Ok().body(format!("Deleted object with id: {}", oid)))
+    } else {
+        let res = HttpResponse::NotFound().body(format!("No object found with id: {}", id));
+        Ok(res)
+    }
 }
 
 ///////////////////////
@@ -187,16 +198,22 @@ async fn upload_photo(
         bytes.extend_from_slice(&item?);
     }
     let r = web::block(move || image::load_from_memory(&bytes)).await?;
-    r.resize(
-        std::cmp::min(1280, r.dimensions().0),
-        std::cmp::min(1280, r.dimensions().1),
-        Lanczos3,
-    )
-    .save_with_format(
-        &filename,
-        image::ImageFormat::from_extension("jpg").unwrap(),
-    )?;
-    Ok(HttpResponse::Ok().body(filename))
+
+    if let Ok(r) = r {
+        r.resize(
+            std::cmp::min(1280, r.dimensions().0),
+            std::cmp::min(1280, r.dimensions().1),
+            Lanczos3,
+        )
+        .save_with_format(
+            &filename,
+            image::ImageFormat::from_extension("jpg").unwrap(),
+        )?;
+        Ok(HttpResponse::Ok().body(filename))
+    } else {
+        let res = HttpResponse::InternalServerError().body("Error loading image");
+        Ok(res)
+    }
 }
 
 #[get("/photos/{oid}")]
@@ -206,8 +223,13 @@ async fn retrieve_photo(oid: web::Path<i32>) -> Result<NamedFile> {
 
 #[delete("/photos/{oid}")]
 async fn delete_photo(oid: web::Path<i32>) -> Result<HttpResponse, ServerError> {
-    web::block(move || fs::remove_file(photo_filename(*oid))).await?;
-    Ok(HttpResponse::Ok().body("File deleted"))
+    let d = web::block(move || fs::remove_file(photo_filename(*oid))).await?;
+    if let Ok(_) = d {
+        Ok(HttpResponse::Ok().body("File deleted"))
+    } else {
+        let res = HttpResponse::NotFound().body("File not found");
+        Ok(res)
+    }
 }
 
 fn photo_filename(id: i32) -> String {

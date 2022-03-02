@@ -14,7 +14,7 @@ pub async fn brand_test(
 
     // Delete all the brands
     let req = test::TestRequest::delete()
-        .header("Authorization", "Bearer 0101")
+        .insert_header(("Authorization", "Bearer 0101"))
         .uri("/api/brands")
         .to_request();
     test::call_service(&mut app, req).await;
@@ -35,7 +35,7 @@ pub async fn brand_test(
         Method::POST,
         "/api/brands",
         "{\"name\":\"  Test brand  \",\"description\":\"    Test description       \"}",
-        StatusCode::NOT_FOUND,
+        StatusCode::CONFLICT,
         "UNIQUE constraint failed: brands.name"
     );
 
@@ -59,7 +59,7 @@ pub async fn brand_test(
         &format!("/api/brands/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
-        "Item not found"
+        "No object found with id:"
     );
 
     // Patch the brand
@@ -89,12 +89,12 @@ pub async fn brand_test(
         &format!("/api/brands/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
-        "Item not found"
+        "No object found with id:"
     );
 
     // Delete all the brands
     let req = test::TestRequest::delete()
-        .header("Authorization", "Bearer 0101")
+        .insert_header(("Authorization", "Bearer 0101"))
         .uri("/api/brands")
         .to_request();
     test::call_service(&mut app, req).await;
