@@ -59,7 +59,7 @@ pub async fn brand_test(
         &format!("/api/brands/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
-        "No object found with id:"
+        "Item not found"
     );
 
     // Patch the brand
@@ -89,7 +89,7 @@ pub async fn brand_test(
         &format!("/api/brands/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
-        "No object found with id:"
+        "Item not found"
     );
 
     // Delete all the brands

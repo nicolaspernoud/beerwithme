@@ -113,7 +113,7 @@ pub async fn item_test(
         &format!("/api/items/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
-        "No object found with id:"
+        "Item not found"
     );
 
     // Patch the item
@@ -156,7 +156,7 @@ pub async fn item_test(
         &format!("/api/items/{}", id + 1),
         "",
         StatusCode::NOT_FOUND,
-        "No object found with id:"
+        "Item not found"
     );
 
     // Create two items and get them all

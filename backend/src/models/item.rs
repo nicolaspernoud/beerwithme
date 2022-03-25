@@ -17,7 +17,7 @@ use crate::{
 
 macro_rules! trim {
     () => {
-        fn trim(mut self) -> Self {
+        fn trim(&mut self) -> &Self {
             self.name = self.name.trim().to_string();
             self.description = self.description.trim().to_string();
             self
@@ -161,7 +161,6 @@ pub async fn delete(
 ) -> Result<HttpResponse, ServerError> {
     let conn = pool.get()?;
     let oid = *oid;
-    let id = oid.clone();
     let d = web::block(move || {
         use crate::schema::items::dsl::*;
         let deleted = diesel::delete(items).filter(id.eq(oid)).execute(&conn)?;
@@ -175,7 +174,7 @@ pub async fn delete(
     if let Ok(_) = d {
         Ok(HttpResponse::Ok().body(format!("Deleted object with id: {}", oid)))
     } else {
-        let res = HttpResponse::NotFound().body(format!("No object found with id: {}", id));
+        let res = HttpResponse::NotFound().body("Item not found");
         Ok(res)
     }
 }

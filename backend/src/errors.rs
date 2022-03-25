@@ -8,7 +8,10 @@ use image::ImageError;
 pub enum ServerError {
     R2D2,
     Blocking,
-    Image,
+    Diesel,
+    DieselNotFound,
+    DieselDatabaseError(String),
+    Image(String),
 }
 
 impl std::fmt::Display for ServerError {
@@ -16,7 +19,10 @@ impl std::fmt::Display for ServerError {
         match self {
             ServerError::R2D2 => write!(f, "R2D2 error"),
             ServerError::Blocking => write!(f, "Blocking error"),
-            ServerError::Image => write!(f, "Image error"),
+            ServerError::Diesel => write!(f, "Diesel error"),
+            ServerError::DieselNotFound => write!(f, "Item not found"),
+            ServerError::DieselDatabaseError(m) => write!(f, "{}", m),
+            ServerError::Image(m) => write!(f, "Image error: {}", m),
         }
     }
 }
@@ -28,7 +34,10 @@ impl ResponseError for ServerError {
         match self {
             ServerError::R2D2 => HttpResponse::InternalServerError().body("R2D2 error"),
             ServerError::Blocking => HttpResponse::InternalServerError().body("Blocking error"),
-            ServerError::Image => HttpResponse::InternalServerError().body("Image error"),
+            ServerError::Diesel => HttpResponse::InternalServerError().body("Diesel error"),
+            ServerError::DieselNotFound => HttpResponse::NotFound().body("Item not found"),
+            ServerError::DieselDatabaseError(m) => HttpResponse::Conflict().body(m.clone()),
+            ServerError::Image(m) => HttpResponse::InternalServerError().body(m.clone()),
         }
     }
 }
@@ -39,6 +48,18 @@ impl From<r2d2::Error> for ServerError {
     }
 }
 
+impl From<diesel::result::Error> for ServerError {
+    fn from(err: diesel::result::Error) -> ServerError {
+        match err {
+            diesel::result::Error::NotFound => ServerError::DieselNotFound,
+            diesel::result::Error::DatabaseError(_, info) => {
+                ServerError::DieselDatabaseError(info.message().to_string())
+            }
+            _ => ServerError::Diesel,
+        }
+    }
+}
+
 impl From<BlockingError> for ServerError {
     fn from(_: BlockingError) -> ServerError {
         ServerError::Blocking
@@ -46,19 +67,19 @@ impl From<BlockingError> for ServerError {
 }
 
 impl From<std::io::Error> for ServerError {
-    fn from(_err: std::io::Error) -> ServerError {
-        ServerError::Image
+    fn from(err: std::io::Error) -> ServerError {
+        ServerError::Image(err.to_string())
     }
 }
 
 impl From<PayloadError> for ServerError {
-    fn from(_err: PayloadError) -> ServerError {
-        ServerError::Image
+    fn from(err: PayloadError) -> ServerError {
+        ServerError::Image(err.to_string())
     }
 }
 
 impl From<ImageError> for ServerError {
-    fn from(_err: ImageError) -> ServerError {
-        ServerError::Image
+    fn from(err: ImageError) -> ServerError {
+        ServerError::Image(err.to_string())
     }
 }
