@@ -2,7 +2,7 @@ use crate::{app::AppConfig, create_app};
 
 pub async fn category_test(
     pool: &r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::SqliteConnection>>,
-    app_config: AppConfig,
+    app_config: &actix_web::web::Data<AppConfig>,
 ) {
     use crate::do_test;
     use actix_web::{

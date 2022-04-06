@@ -1,5 +1,7 @@
 #[cfg(test)]
 mod tests {
+    use actix_web::web::Data;
+
     use crate::{
         app::AppConfig,
         models::{brand_tests::brand_test, category_tests::category_test, item_tests::item_test},
@@ -25,9 +27,10 @@ mod tests {
 
         // Set up authorization token
         let app_config = AppConfig::new("0101".to_string());
+        let app_data = Data::new(app_config);
 
-        brand_test(&pool, app_config.clone()).await;
-        category_test(&pool, app_config.clone()).await;
-        item_test(&pool, app_config.clone()).await;
+        brand_test(&pool, &app_data).await;
+        category_test(&pool, &app_data).await;
+        item_test(&pool, &app_data).await;
     }
 }
