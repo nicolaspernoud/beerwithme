@@ -36,8 +36,8 @@ macro_rules! trim {
     Identifiable,
     Associations,
 )]
-#[table_name = "items"]
-#[belongs_to(Brand)]
+#[diesel(table_name = items)]
+#[diesel(belongs_to(Brand))]
 pub struct Item {
     pub id: i32,
     pub brand_id: i32,
@@ -54,7 +54,7 @@ impl Item {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Insertable)]
-#[table_name = "items"]
+#[diesel(table_name = items)]
 pub struct NewItem {
     pub brand_id: i32,
     pub category_id: i32,
@@ -99,7 +99,7 @@ pub async fn read_filter(
     req: HttpRequest,
     pool: web::Data<DbPool>,
 ) -> Result<HttpResponse, ServerError> {
-    let conn = pool.get()?;
+    let mut conn = pool.get()?;
     let params = web::Query::<Params>::from_query(req.query_string());
     let object;
     use crate::schema::items::dsl::*;
@@ -112,7 +112,7 @@ pub async fn read_filter(
                     .or_filter(crate::schema::brands::name.like(format!("%{}%", p.name)))
                     .filter(barcode.like(format!("%{}%", p.barcode)))
                     .order((rating.desc(), name.asc()))
-                    .load::<(Item, Brand)>(&conn)
+                    .load::<(Item, Brand)>(&mut conn)
             })
             .await?;
         }
@@ -121,7 +121,7 @@ pub async fn read_filter(
                 items
                     .inner_join(crate::schema::brands::table)
                     .order((rating.desc(), name.asc()))
-                    .load::<(Item, Brand)>(&conn)
+                    .load::<(Item, Brand)>(&mut conn)
             })
             .await?;
         }
@@ -159,11 +159,13 @@ pub async fn delete(
     pool: web::Data<DbPool>,
     oid: web::Path<i32>,
 ) -> Result<HttpResponse, ServerError> {
-    let conn = pool.get()?;
+    let mut conn = pool.get()?;
     let oid = *oid;
     let d = web::block(move || {
         use crate::schema::items::dsl::*;
-        let deleted = diesel::delete(items).filter(id.eq(oid)).execute(&conn)?;
+        let deleted = diesel::delete(items)
+            .filter(id.eq(oid))
+            .execute(&mut conn)?;
         match deleted {
             0 => Err(diesel::result::Error::NotFound),
             _ => Ok(deleted),

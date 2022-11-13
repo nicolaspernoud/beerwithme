@@ -97,6 +97,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
     });
     controller.scannedDataStream.listen((scanData) async {
       await this.controller!.pauseCamera();
+      if (!mounted) return;
       Navigator.pop(context, scanData.code);
     });
   }

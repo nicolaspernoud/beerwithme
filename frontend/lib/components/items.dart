@@ -21,10 +21,10 @@ class Items extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ItemsState createState() => _ItemsState();
+  ItemsState createState() => ItemsState();
 }
 
-class _ItemsState extends State<Items> {
+class ItemsState extends State<Items> {
   late Future<List<Item>> items;
   String _filter = "";
 
@@ -34,7 +34,7 @@ class _ItemsState extends State<Items> {
     if (App().hasToken) {
       items = widget.crud.read();
     } else {
-      WidgetsBinding.instance?.addPostFrameCallback(openSettings);
+      WidgetsBinding.instance.addPostFrameCallback(openSettings);
     }
   }
 
@@ -44,8 +44,8 @@ class _ItemsState extends State<Items> {
       builder: (BuildContext context) => AlertDialog(
         title: Text(MyLocalizations.of(context)!.tr("settings")),
         content: const SizedBox(
-          child: SettingsField(),
           height: 150,
+          child: SettingsField(),
         ),
         actions: <Widget>[
           TextButton(
@@ -134,9 +134,8 @@ class _ItemsState extends State<Items> {
                                         alterable: false,
                                       ),
                                     ),
-                                    title: Text(itms.elementAt(i).name +
-                                        " - " +
-                                        itms.elementAt(i).brandName!),
+                                    title: Text(
+                                        "${itms.elementAt(i).name} - ${itms.elementAt(i).brandName!}"),
                                     subtitle: Text(
                                       itms.elementAt(i).description,
                                       maxLines: 2,

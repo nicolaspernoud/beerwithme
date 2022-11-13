@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 import 'package:flutter/foundation.dart';
@@ -33,10 +32,10 @@ class NewEditItem extends StatefulWidget {
       : super(key: key);
 
   @override
-  _NewEditItemState createState() => _NewEditItemState();
+  NewEditItemState createState() => NewEditItemState();
 }
 
-class _NewEditItemState extends State<NewEditItem> {
+class NewEditItemState extends State<NewEditItem> {
   // ignore: constant_identifier_names
   static const JPG_IMAGE_QUALITY = 80;
 
@@ -47,7 +46,7 @@ class _NewEditItemState extends State<NewEditItem> {
   bool submitting = false;
 
   Future<Uint8List?>? imageBytes;
-  String hostname = (App().prefs.getString("hostname") ?? "") + "/api";
+  String hostname = "${App().prefs.getString("hostname") ?? ""}/api";
   String token = App().prefs.getString("token") ?? "";
 
   @override
@@ -92,7 +91,7 @@ class _NewEditItemState extends State<NewEditItem> {
       }
       final response = await http.post(
           Uri.parse('$hostname/items/photos/${id.toString()}'),
-          headers: <String, String>{'Authorization': "Bearer " + token},
+          headers: <String, String>{'Authorization': "Bearer $token"},
           body: img);
       if (response.statusCode != 200) {
         throw Exception(response.body.toString());
@@ -100,7 +99,7 @@ class _NewEditItemState extends State<NewEditItem> {
     } else {
       await http.delete(
         Uri.parse('$hostname/items/photos/${id.toString()}'),
-        headers: <String, String>{'Authorization': "Bearer " + token},
+        headers: <String, String>{'Authorization': "Bearer $token"},
       );
     }
   }
@@ -108,7 +107,7 @@ class _NewEditItemState extends State<NewEditItem> {
   _imgFromServer(int id) async {
     final response = await http.get(
       Uri.parse('$hostname/items/photos/${id.toString()}'),
-      headers: <String, String>{'Authorization': "Bearer " + token},
+      headers: <String, String>{'Authorization': "Bearer $token"},
     );
     if (response.statusCode == 200) {
       imageBytes = Future.value(response.bodyBytes);
@@ -130,6 +129,7 @@ class _NewEditItemState extends State<NewEditItem> {
                       icon: const Icon(Icons.delete_forever),
                       onPressed: () async {
                         await widget.crud.delete(widget.item.id);
+                        if (!mounted) return;
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(MyLocalizations.of(context)!
@@ -375,6 +375,7 @@ class _NewEditItemState extends State<NewEditItem> {
                                       } catch (e) {
                                         msg = e.toString();
                                       }
+                                      if (!mounted) return;
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(content: Text(msg)),
@@ -417,10 +418,10 @@ class CategoriesDropDown extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CategoriesDropDownState createState() => _CategoriesDropDownState();
+  CategoriesDropDownState createState() => CategoriesDropDownState();
 }
 
-class _CategoriesDropDownState extends State<CategoriesDropDown> {
+class CategoriesDropDownState extends State<CategoriesDropDown> {
   late Future<List<category.Category>> categories;
   late int _index;
 

@@ -3,7 +3,7 @@ import 'package:frontend/components/new_category.dart';
 import 'package:frontend/models/category.dart';
 import 'package:frontend/models/crud.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../globals.dart';
 import '../i18n.dart';
@@ -13,10 +13,10 @@ class Settings extends StatefulWidget {
   const Settings({Key? key, required this.crud}) : super(key: key);
 
   @override
-  _SettingsState createState() => _SettingsState();
+  SettingsState createState() => SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class SettingsState extends State<Settings> {
   late Future<List<Category>> categories;
   static const _url =
       'https://github.com/nicolaspernoud/beerwithme/releases/latest';
@@ -42,8 +42,8 @@ class _SettingsState extends State<Settings> {
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: ElevatedButton(
                   onPressed: () async {
-                    await canLaunch(_url)
-                        ? await launch(_url)
+                    await canLaunchUrlString(_url)
+                        ? await launchUrlString(_url)
                         : throw 'Could not launch $_url';
                   },
                   child: Padding(

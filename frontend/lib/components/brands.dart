@@ -10,10 +10,10 @@ class Brands extends StatefulWidget {
   const Brands({Key? key, required this.crud}) : super(key: key);
 
   @override
-  _BrandsState createState() => _BrandsState();
+  BrandsState createState() => BrandsState();
 }
 
-class _BrandsState extends State<Brands> {
+class BrandsState extends State<Brands> {
   late Future<List<Brand>> brands;
   final searchController = TextEditingController();
 

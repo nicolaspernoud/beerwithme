@@ -11,10 +11,10 @@ class NewEditCategory extends StatefulWidget {
       : super(key: key);
 
   @override
-  _NewEditCategoryState createState() => _NewEditCategoryState();
+  NewEditCategoryState createState() => NewEditCategoryState();
 }
 
-class _NewEditCategoryState extends State<NewEditCategory> {
+class NewEditCategoryState extends State<NewEditCategory> {
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -31,6 +31,7 @@ class _NewEditCategoryState extends State<NewEditCategory> {
                       icon: const Icon(Icons.delete_forever),
                       onPressed: () async {
                         await widget.crud.delete(widget.category.id);
+                        if (!mounted) return;
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(MyLocalizations.of(context)!
@@ -97,6 +98,7 @@ class _NewEditCategoryState extends State<NewEditCategory> {
                           } catch (e) {
                             msg = e.toString();
                           }
+                          if (!mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(msg)),
                           );

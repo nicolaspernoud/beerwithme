@@ -18,7 +18,7 @@ macro_rules! trim {
 #[derive(
     Debug, Clone, Serialize, Deserialize, Queryable, Insertable, AsChangeset, Identifiable,
 )]
-#[table_name = "brands"]
+#[diesel(table_name = brands)]
 pub struct Brand {
     pub id: i32,
     pub name: String,
@@ -29,7 +29,7 @@ impl Brand {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Insertable)]
-#[table_name = "brands"]
+#[diesel(table_name = brands)]
 pub struct NewBrand {
     pub name: String,
     pub description: String,
