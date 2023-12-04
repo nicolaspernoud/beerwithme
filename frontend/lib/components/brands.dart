@@ -7,7 +7,7 @@ import '../i18n.dart';
 
 class Brands extends StatefulWidget {
   final Crud crud;
-  const Brands({Key? key, required this.crud}) : super(key: key);
+  const Brands({super.key, required this.crud});
 
   @override
   BrandsState createState() => BrandsState();
@@ -101,7 +101,7 @@ class BrandsState extends State<Brands> {
                                       ],
                                     ),
                                   )))
-                              .toList(),
+                              ,
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: IconButton(

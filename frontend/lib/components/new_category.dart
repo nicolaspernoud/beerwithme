@@ -7,8 +7,7 @@ import '../i18n.dart';
 class NewEditCategory extends StatefulWidget {
   final Crud crud;
   final Category category;
-  const NewEditCategory({Key? key, required this.crud, required this.category})
-      : super(key: key);
+  const NewEditCategory({super.key, required this.crud, required this.category});
 
   @override
   NewEditCategoryState createState() => NewEditCategoryState();

@@ -10,13 +10,12 @@ class StarRating extends StatelessWidget {
   final bool alterable;
 
   const StarRating(
-      {Key? key,
+      {super.key,
       this.starCount = 5,
       this.rating = 0,
       required this.onRatingChanged,
       required this.color,
-      required this.alterable})
-      : super(key: key);
+      required this.alterable});
 
   Widget buildStar(BuildContext context, int index) {
     var size = alterable ? 25.0 : 15.0;

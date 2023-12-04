@@ -24,12 +24,11 @@ class NewEditItem extends StatefulWidget {
   final Crud brandsCrud;
   final Item item;
   const NewEditItem(
-      {Key? key,
+      {super.key,
       required this.crud,
       required this.categoriesCrud,
       required this.brandsCrud,
-      required this.item})
-      : super(key: key);
+      required this.item});
 
   @override
   NewEditItemState createState() => NewEditItemState();
@@ -79,7 +78,7 @@ class NewEditItemState extends State<NewEditItem> {
     final orientedImage = image.bakeOrientation(capturedImage!);
     final encodedImage =
         image.encodeJpg(orientedImage, quality: JPG_IMAGE_QUALITY);
-    return encodedImage as Uint8List;
+    return encodedImage;
   }
 
   Future<void> _imgToServer(int id) async {
@@ -411,11 +410,11 @@ class CategoriesDropDown extends StatefulWidget {
   final Crud crud;
   final int initialIndex;
   const CategoriesDropDown({
-    Key? key,
+    super.key,
     required this.crud,
     required this.callback,
     required this.initialIndex,
-  }) : super(key: key);
+  });
 
   @override
   CategoriesDropDownState createState() => CategoriesDropDownState();

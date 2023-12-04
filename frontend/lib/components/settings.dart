@@ -10,7 +10,7 @@ import '../i18n.dart';
 
 class Settings extends StatefulWidget {
   final Crud crud;
-  const Settings({Key? key, required this.crud}) : super(key: key);
+  const Settings({super.key, required this.crud});
 
   @override
   SettingsState createState() => SettingsState();
@@ -87,7 +87,7 @@ class SettingsState extends State<Settings> {
                                       ],
                                     ),
                                   )))
-                              .toList(),
+                              ,
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: IconButton(
@@ -127,8 +127,8 @@ class SettingsState extends State<Settings> {
 
 class SettingsField extends StatelessWidget {
   const SettingsField({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

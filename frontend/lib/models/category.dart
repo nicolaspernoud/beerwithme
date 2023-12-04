@@ -6,10 +6,10 @@ class Category extends Serialisable with EquatableMixin {
   String description;
 
   Category({
-    required id,
+    required super.id,
     required this.name,
     required this.description,
-  }) : super(id: id);
+  });
 
   @override
   Map<String, dynamic> toJson() {

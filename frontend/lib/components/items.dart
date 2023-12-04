@@ -17,8 +17,7 @@ class Items extends StatefulWidget {
 
   final String title;
 
-  const Items({Key? key, required this.crud, required this.title})
-      : super(key: key);
+  const Items({super.key, required this.crud, required this.title});
 
   @override
   ItemsState createState() => ItemsState();
@@ -76,9 +75,9 @@ class ItemsState extends State<Items> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/icon/icon.png',
+                'assets/icon/icon_foreground.png',
                 fit: BoxFit.contain,
-                height: 40,
+                height: 60,
               ),
               const SizedBox(width: 8),
               Text(
@@ -261,7 +260,7 @@ String formatTime(DateTime d) {
 
 class StickyBottomAppBar extends StatelessWidget {
   final BottomAppBar child;
-  const StickyBottomAppBar({Key? key, required this.child}) : super(key: key);
+  const StickyBottomAppBar({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

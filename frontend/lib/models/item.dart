@@ -14,7 +14,7 @@ class Item extends Serialisable with EquatableMixin {
   String? brandName;
 
   Item(
-      {required id,
+      {required super.id,
       required this.categoryId,
       required this.brandId,
       required this.name,
@@ -23,8 +23,7 @@ class Item extends Serialisable with EquatableMixin {
       required this.description,
       required this.rating,
       required this.time,
-      this.brandName})
-      : super(id: id);
+      this.brandName});
 
   @override
   Map<String, dynamic> toJson() {

@@ -7,8 +7,7 @@ import '../i18n.dart';
 class NewEditBrand extends StatefulWidget {
   final Crud crud;
   final Brand brand;
-  const NewEditBrand({Key? key, required this.crud, required this.brand})
-      : super(key: key);
+  const NewEditBrand({super.key, required this.crud, required this.brand});
 
   @override
   NewEditBrandState createState() => NewEditBrandState();
