@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(title: 'Beer with me!'),
       localizationsDelegates: const [
         MyLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: const [
