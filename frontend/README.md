@@ -1,6 +1,6 @@
 # frontend
 
-A new Flutter project.
+A personal database app for beer ratings
 
 ## Getting Started
 

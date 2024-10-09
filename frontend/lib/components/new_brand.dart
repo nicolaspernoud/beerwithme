@@ -30,7 +30,7 @@ class NewEditBrandState extends State<NewEditBrand> {
                       icon: const Icon(Icons.delete_forever),
                       onPressed: () async {
                         await widget.crud.delete(widget.brand.id);
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(MyLocalizations.of(context)!
@@ -97,7 +97,7 @@ class NewEditBrandState extends State<NewEditBrand> {
                           } catch (e) {
                             msg = e.toString();
                           }
-                          if (!mounted) return;
+                          if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(msg)),
                           );

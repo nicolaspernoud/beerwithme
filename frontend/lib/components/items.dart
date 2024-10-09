@@ -55,7 +55,7 @@ class ItemsState extends State<Items> {
       ),
     );
     setState(() {
-      hasTokenOrOpenSettings(_);
+      hasTokenOrOpenSettings(0);
     });
   }
 
@@ -63,7 +63,7 @@ class ItemsState extends State<Items> {
     if (App().hasToken) {
       items = widget.crud.read();
     } else {
-      openSettings(_);
+      openSettings(0);
     }
   }
 
