@@ -1,8 +1,6 @@
-import 'package:equatable/equatable.dart';
-
 import 'crud.dart';
 
-class Item extends Serialisable with EquatableMixin {
+class Item extends Serialisable {
   int categoryId;
   int brandId;
   String name;
@@ -57,8 +55,25 @@ class Item extends Serialisable with EquatableMixin {
   }
 
   @override
-  List<Object> get props {
-    return [
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is Item &&
+        other.id == id &&
+        other.categoryId == categoryId &&
+        other.brandId == brandId &&
+        other.name == name &&
+        other.alcohol == alcohol &&
+        other.barcode == barcode &&
+        other.description == description &&
+        other.rating == rating &&
+        other.time == time &&
+        other.brandName == brandName;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
       id,
       categoryId,
       brandId,
@@ -67,10 +82,8 @@ class Item extends Serialisable with EquatableMixin {
       barcode,
       description,
       rating,
-      time
-    ];
+      time,
+      brandName,
+    );
   }
-
-  @override
-  bool get stringify => true;
 }

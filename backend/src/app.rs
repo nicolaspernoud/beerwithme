@@ -31,7 +31,7 @@ pub async fn validator(
 #[macro_export]
 macro_rules! create_app {
     ($pool:expr, $app_data:expr) => {{
-        use crate::models::{brand, category, item};
+        use $crate::models::{brand, category, item};
         use actix_cors::Cors;
         use actix_web::{error, middleware, web, web::Data, App, HttpResponse};
         use actix_web_httpauth::middleware::HttpAuthentication;
@@ -51,7 +51,7 @@ macro_rules! create_app {
             .wrap(middleware::Logger::default())
             .service(
                 web::scope("/api/brands")
-                    .wrap(HttpAuthentication::bearer(crate::app::validator))
+                    .wrap(HttpAuthentication::bearer($crate::app::validator))
                     .service(brand::read_all)
                     .service(brand::read)
                     .service(brand::create)
@@ -61,7 +61,7 @@ macro_rules! create_app {
             )
             .service(
                 web::scope("/api/categories")
-                    .wrap(HttpAuthentication::bearer(crate::app::validator))
+                    .wrap(HttpAuthentication::bearer($crate::app::validator))
                     .service(category::read_all)
                     .service(category::read)
                     .service(category::create)
@@ -71,7 +71,7 @@ macro_rules! create_app {
             )
             .service(
                 web::scope("/api/items")
-                    .wrap(HttpAuthentication::bearer(crate::app::validator))
+                    .wrap(HttpAuthentication::bearer($crate::app::validator))
                     .service(item::read_filter)
                     .service(item::read)
                     .service(item::create)

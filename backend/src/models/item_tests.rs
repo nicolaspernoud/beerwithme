@@ -1,5 +1,31 @@
 use crate::{app::AppConfig, create_app};
 
+impl std::fmt::Display for crate::models::item::Item {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "
+            id: {}\n
+            brand_id: {}\n
+            category_id: {}\n
+            name: {}\n
+            alcohol: {}\n
+            barcode: {}\n
+            description: {}\n
+            rating: {}\n
+            ",
+            self.id,
+            self.brand_id,
+            self.category_id,
+            self.name,
+            self.alcohol,
+            self.barcode,
+            self.description,
+            self.rating
+        )
+    }
+}
+
 pub async fn item_test(
     pool: &r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::SqliteConnection>>,
     app_config: &actix_web::web::Data<AppConfig>,
@@ -11,32 +37,6 @@ pub async fn item_test(
     };
 
     let mut app = test::init_service(create_app!(pool, app_config)).await;
-
-    impl std::fmt::Display for crate::models::item::Item {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(
-                f,
-                "
-                id: {}\n
-                brand_id: {}\n
-                category_id: {}\n
-                name: {}\n
-                alcohol: {}\n
-                barcode: {}\n
-                description: {}\n
-                rating: {}\n
-                ",
-                self.id,
-                self.brand_id,
-                self.category_id,
-                self.name,
-                self.alcohol,
-                self.barcode,
-                self.description,
-                self.rating
-            )
-        }
-    }
 
     // Check that using the wrong token gives an unauthorized error
     let req = test::TestRequest::with_uri("/api/items")
@@ -124,8 +124,8 @@ pub async fn item_test(
         Method::PUT,
         &format!("/api/items/{}", id),
         &crate::models::item::Item {
-            id: id,
-            brand_id: brand_id,
+            id,
+            brand_id,
             category_id: 6,
             name: String::from("   Patched name   "),
             alcohol: 5.0,

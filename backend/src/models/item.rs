@@ -101,11 +101,10 @@ pub async fn read_filter(
 ) -> Result<HttpResponse, ServerError> {
     let mut conn = pool.get()?;
     let params = web::Query::<Params>::from_query(req.query_string());
-    let object;
     use crate::schema::items::dsl::*;
-    match params {
+    let object = match params {
         Ok(p) => {
-            object = web::block(move || {
+            web::block(move || {
                 items
                     .inner_join(crate::schema::brands::table)
                     .filter(name.like(format!("%{}%", p.name)))
@@ -114,18 +113,18 @@ pub async fn read_filter(
                     .order((rating.desc(), name.asc()))
                     .load::<(Item, Brand)>(&mut conn)
             })
-            .await?;
+            .await?
         }
         Err(_) => {
-            object = web::block(move || {
+            web::block(move || {
                 items
                     .inner_join(crate::schema::brands::table)
                     .order((rating.desc(), name.asc()))
                     .load::<(Item, Brand)>(&mut conn)
             })
-            .await?;
+            .await?
         }
-    }
+    };
     if let Ok(object) = object {
         let mut out_items: Vec<OutItem> = Vec::new();
         for o in object {
@@ -136,7 +135,7 @@ pub async fn read_filter(
         }
         Ok(HttpResponse::Ok().json(out_items))
     } else {
-        let res = HttpResponse::NotFound().body(format!("No objects found"));
+        let res = HttpResponse::NotFound().body("No objects found".to_string());
         Ok(res)
     }
 }
@@ -173,7 +172,7 @@ pub async fn delete(
     })
     .await?;
     let _ = web::block(move || fs::remove_file(photo_filename(oid))).await;
-    if let Ok(_) = d {
+    if d.is_ok() {
         Ok(HttpResponse::Ok().body(format!("Deleted object with id: {}", oid)))
     } else {
         let res = HttpResponse::NotFound().body("Item not found");
@@ -225,7 +224,7 @@ async fn retrieve_photo(oid: web::Path<i32>) -> Result<NamedFile> {
 #[delete("/photos/{oid}")]
 async fn delete_photo(oid: web::Path<i32>) -> Result<HttpResponse, ServerError> {
     let d = web::block(move || fs::remove_file(photo_filename(*oid))).await?;
-    if let Ok(_) = d {
+    if d.is_ok() {
         Ok(HttpResponse::Ok().body("File deleted"))
     } else {
         let res = HttpResponse::NotFound().body("File not found");
