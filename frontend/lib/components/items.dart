@@ -37,7 +37,7 @@ class ItemsState extends State<Items> {
     }
   }
 
-  void openSettings(_) async {
+  void openSettings(Duration _) async {
     await showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -55,15 +55,15 @@ class ItemsState extends State<Items> {
       ),
     );
     setState(() {
-      hasTokenOrOpenSettings(0);
+      hasTokenOrOpenSettings();
     });
   }
 
-  void hasTokenOrOpenSettings(_) {
+  void hasTokenOrOpenSettings() {
     if (App().hasToken) {
       items = widget.crud.read();
     } else {
-      openSettings(0);
+      openSettings(Duration(seconds: 0));
     }
   }
 
@@ -95,7 +95,7 @@ class ItemsState extends State<Items> {
                     return Settings(crud: APICrud<category.Category>());
                   }));
                   setState(() {
-                    hasTokenOrOpenSettings(null);
+                    hasTokenOrOpenSettings();
                   });
                 })
           ],
@@ -239,7 +239,7 @@ class ItemsState extends State<Items> {
         ));
   }
 
-  Future<void> _edit(t) async {
+  Future<void> _edit(Item t) async {
     await Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return NewEditItem(

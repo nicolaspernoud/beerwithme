@@ -113,7 +113,6 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
 
   @override
   void dispose() {
-    controller?.dispose();
     super.dispose();
   }
 }

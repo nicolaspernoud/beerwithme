@@ -1,3 +1,5 @@
+// ignore_for_file: strict_top_level_inference
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';

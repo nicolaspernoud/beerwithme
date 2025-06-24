@@ -62,7 +62,7 @@ class NewEditItemState extends State<NewEditItem> {
     }
   }
 
-  _imgFromCamera() async {
+  Future<void> _imgFromCamera() async {
     final temp = await ImagePicker().pickImage(
         source: ImageSource.camera,
         imageQuality: JPG_IMAGE_QUALITY,
@@ -103,7 +103,7 @@ class NewEditItemState extends State<NewEditItem> {
     }
   }
 
-  _imgFromServer(int id) async {
+  Future<void> _imgFromServer(int id) async {
     final response = await http.get(
       Uri.parse('$hostname/items/photos/${id.toString()}'),
       headers: <String, String>{'Authorization': "Bearer $token"},
