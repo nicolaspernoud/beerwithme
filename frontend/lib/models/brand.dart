@@ -1,22 +1,14 @@
-import 'package:frontend/models/crud.dart';
+import 'package:beerwithme/models/crud.dart';
 
 class Brand extends Serialisable {
   String name;
   String description;
 
-  Brand({
-    required super.id,
-    required this.name,
-    required this.description,
-  });
+  Brand({required super.id, required this.name, required this.description});
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      if (id > 0) 'id': id,
-      'name': name,
-      'description': description,
-    };
+    return {if (id > 0) 'id': id, 'name': name, 'description': description};
   }
 
   factory Brand.fromJson(Map<String, dynamic> data) {

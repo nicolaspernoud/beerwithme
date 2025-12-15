@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/star_rating.dart';
-import 'package:frontend/models/brand.dart';
-import 'package:frontend/models/category.dart' as category;
-import 'package:frontend/models/crud.dart';
-import 'package:frontend/models/item.dart';
+import 'package:beerwithme/components/star_rating.dart';
+import 'package:beerwithme/models/brand.dart';
+import 'package:beerwithme/models/category.dart' as category;
+import 'package:beerwithme/models/crud.dart';
+import 'package:beerwithme/models/item.dart';
 
 import '../globals.dart';
 import '../i18n.dart';
@@ -42,10 +42,7 @@ class ItemsState extends State<Items> {
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text(MyLocalizations.of(context)!.tr("settings")),
-        content: const SizedBox(
-          height: 150,
-          child: SettingsField(),
-        ),
+        content: const SizedBox(height: 150, child: SettingsField()),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context, 'OK'),
@@ -70,39 +67,44 @@ class ItemsState extends State<Items> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/icon/icon_foreground.png',
-                fit: BoxFit.contain,
-                height: 60,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                widget.title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              )
-            ],
-          ),
-          actions: [
-            IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () async {
-                  await Navigator.push(context,
-                      MaterialPageRoute<void>(builder: (BuildContext context) {
-                    return Settings(crud: APICrud<category.Category>());
-                  }));
-                  setState(() {
-                    hasTokenOrOpenSettings();
-                  });
-                })
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/icon/icon_foreground.png',
+              fit: BoxFit.contain,
+              height: 60,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              widget.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
-        body: (App().hasToken)
-            ? Center(
-                child: Padding(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) {
+                    return Settings(crud: APICrud<category.Category>());
+                  },
+                ),
+              );
+              setState(() {
+                hasTokenOrOpenSettings();
+              });
+            },
+          ),
+        ],
+      ),
+      body: (App().hasToken)
+          ? Center(
+              child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: FutureBuilder<List<Item>>(
                   future: items,
@@ -113,15 +115,15 @@ class ItemsState extends State<Items> {
                       child = ListView.builder(
                         itemBuilder: (ctx, i) {
                           return Card(
-                              child: InkWell(
-                            splashColor: Colors.amber.withAlpha(30),
-                            onTap: () {
-                              _edit(itms.elementAt(i));
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
+                            child: InkWell(
+                              splashColor: Colors.amber.withAlpha(30),
+                              onTap: () {
+                                _edit(itms.elementAt(i));
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ListTile(
                                     leading: SizedBox(
                                       width: 75,
                                       child: StarRating(
@@ -134,21 +136,25 @@ class ItemsState extends State<Items> {
                                       ),
                                     ),
                                     title: Text(
-                                        "${itms.elementAt(i).name} - ${itms.elementAt(i).brandName!}"),
+                                      "${itms.elementAt(i).name} - ${itms.elementAt(i).brandName!}",
+                                    ),
                                     subtitle: Text(
                                       itms.elementAt(i).description,
                                       maxLines: 2,
-                                    ))
-                              ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ));
+                          );
                         },
                         itemCount: itms.length,
                         physics: const AlwaysScrollableScrollPhysics(),
                       );
                     } else if (snapshot.hasError) {
                       child = Text(
-                          MyLocalizations.of(context)!.tr("try_new_token"));
+                        MyLocalizations.of(context)!.tr("try_new_token"),
+                      );
                     } else {
                       child = const CircularProgressIndicator();
                     }
@@ -158,18 +164,20 @@ class ItemsState extends State<Items> {
                     );
                   },
                 ),
-              ))
-            : null,
-        bottomNavigationBar: StickyBottomAppBar(
-          child: BottomAppBar(
-              child: Padding(
+              ),
+            )
+          : null,
+      bottomNavigationBar: StickyBottomAppBar(
+        child: BottomAppBar(
+          child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
               children: [
                 IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      _edit(Item(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    _edit(
+                      Item(
                         id: 0,
                         categoryId: 1,
                         brandId: 1,
@@ -179,14 +187,12 @@ class ItemsState extends State<Items> {
                         description: "",
                         rating: 2,
                         time: DateTime.now(),
-                      ));
-                    }),
-                Text(MyLocalizations.of(context)!.tr("create_item")),
-                Expanded(
-                  child: Container(
-                    height: 50,
-                  ),
+                      ),
+                    );
+                  },
                 ),
+                Text(MyLocalizations.of(context)!.tr("create_item")),
+                Expanded(child: Container(height: 50)),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -196,58 +202,70 @@ class ItemsState extends State<Items> {
                       child: SizedBox(
                         width: 160,
                         child: TextFormField(
-                            initialValue: _filter,
-                            decoration: InputDecoration(
-                                labelText:
-                                    MyLocalizations.of(context)!.tr("search")),
-                            // The validator receives the text that the user has entered.
-                            onChanged: (value) {
-                              _filter = value;
-                              setState(() {
-                                items =
-                                    widget.crud.read("name=$_filter&barcode=");
-                              });
-                            },
-                            onTap: () {
-                              items =
-                                  widget.crud.read("name=$_filter&barcode=");
-                              setState(() {});
-                            }),
+                          initialValue: _filter,
+                          decoration: InputDecoration(
+                            labelText: MyLocalizations.of(
+                              context,
+                            )!.tr("search"),
+                          ),
+                          // The validator receives the text that the user has entered.
+                          onChanged: (value) {
+                            _filter = value;
+                            setState(() {
+                              items = widget.crud.read(
+                                "name=$_filter&barcode=",
+                              );
+                            });
+                          },
+                          onTap: () {
+                            items = widget.crud.read("name=$_filter&barcode=");
+                            setState(() {});
+                          },
+                        ),
                       ),
                     ),
                     if (!kIsWeb)
                       IconButton(
-                          onPressed: () async {
-                            final barcode = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const BarcodeScanner()),
-                            );
-                            if (barcode != null) {
-                              setState(() {
-                                items =
-                                    widget.crud.read("name=&barcode=$barcode");
-                              });
-                            }
-                          },
-                          icon: const Icon(Icons.qr_code_scanner))
+                        onPressed: () async {
+                          final barcode = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BarcodeScanner(),
+                            ),
+                          );
+                          if (barcode != null) {
+                            setState(() {
+                              items = widget.crud.read(
+                                "name=&barcode=$barcode",
+                              );
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.qr_code_scanner),
+                      ),
                   ],
                 ),
               ],
             ),
-          )),
-        ));
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _edit(Item t) async {
-    await Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      return NewEditItem(
-          crud: APICrud<Item>(),
-          categoriesCrud: APICrud<category.Category>(),
-          brandsCrud: APICrud<Brand>(),
-          item: t);
-    }));
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return NewEditItem(
+            crud: APICrud<Item>(),
+            categoriesCrud: APICrud<category.Category>(),
+            brandsCrud: APICrud<Brand>(),
+            item: t,
+          );
+        },
+      ),
+    );
     setState(() {
       items = widget.crud.read("name=$_filter&barcode=");
     });

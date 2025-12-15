@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/globals.dart';
+import 'package:beerwithme/globals.dart';
 import 'components/items.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'i18n.dart';
@@ -21,24 +21,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Beer with me!',
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.amber,
-          ),
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.amber,
-            elevation: 4,
-            shadowColor: Theme.of(context).shadowColor,
-          )),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.amber,
+          elevation: 4,
+          shadowColor: Theme.of(context).shadowColor,
+        ),
+      ),
       home: const MyHomePage(title: 'Beer with me!'),
       localizationsDelegates: const [
         MyLocalizationsDelegate(),
         ...GlobalMaterialLocalizations.delegates,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en', ''),
-        Locale('fr', ''),
-      ],
+      supportedLocales: const [Locale('en', ''), Locale('fr', '')],
     );
   }
 }

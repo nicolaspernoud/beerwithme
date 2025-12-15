@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/new_category.dart';
-import 'package:frontend/models/category.dart';
-import 'package:frontend/models/crud.dart';
+import 'package:beerwithme/components/new_category.dart';
+import 'package:beerwithme/models/category.dart';
+import 'package:beerwithme/models/crud.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -29,11 +29,9 @@ class SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(MyLocalizations.of(context)!.tr("settings")),
-        ),
-        body: Center(
-            child: Padding(
+      appBar: AppBar(title: Text(MyLocalizations.of(context)!.tr("settings"))),
+      body: Center(
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
@@ -49,7 +47,8 @@ class SettingsState extends State<Settings> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(
-                        MyLocalizations.of(context)!.tr("get_latest_release")),
+                      MyLocalizations.of(context)!.tr("get_latest_release"),
+                    ),
                   ),
                 ),
               ),
@@ -69,25 +68,26 @@ class SettingsState extends State<Settings> {
                     if (snapshot.hasData) {
                       return Column(
                         children: [
-                          ...snapshot.data!
-                              .map((a) => Card(
-                                      child: InkWell(
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    onTap: () {
-                                      _editCategory(a);
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        ListTile(
-                                          leading: const Icon(Icons.label),
-                                          title: Text(a.name),
-                                          subtitle: Text(a.description),
-                                        ),
-                                      ],
+                          ...snapshot.data!.map(
+                            (a) => Card(
+                              child: InkWell(
+                                splashColor: Colors.blue.withAlpha(30),
+                                onTap: () {
+                                  _editCategory(a);
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: const Icon(Icons.label),
+                                      title: Text(a.name),
+                                      subtitle: Text(a.description),
                                     ),
-                                  )))
-                              ,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: IconButton(
@@ -95,7 +95,8 @@ class SettingsState extends State<Settings> {
                               color: Colors.blue,
                               onPressed: () {
                                 _editCategory(
-                                    Category(id: 0, name: "", description: ""));
+                                  Category(id: 0, name: "", description: ""),
+                                );
                               },
                             ),
                           ),
@@ -107,18 +108,23 @@ class SettingsState extends State<Settings> {
                     // By default, show a loading spinner.
                     return const Center(child: CircularProgressIndicator());
                   },
-                )
+                ),
               ],
             ],
           ),
-        )));
+        ),
+      ),
+    );
   }
 
   Future<void> _editCategory(Category c) async {
-    await Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      return NewEditCategory(crud: APICrud<Category>(), category: c);
-    }));
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return NewEditCategory(crud: APICrud<Category>(), category: c);
+        },
+      ),
+    );
     setState(() {
       categories = widget.crud.read();
     });
@@ -126,9 +132,7 @@ class SettingsState extends State<Settings> {
 }
 
 class SettingsField extends StatelessWidget {
-  const SettingsField({
-    super.key,
-  });
+  const SettingsField({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +142,8 @@ class SettingsField extends StatelessWidget {
           TextFormField(
             initialValue: App().prefs.getString("hostname"),
             decoration: InputDecoration(
-                labelText: MyLocalizations.of(context)!.tr("hostname")),
+              labelText: MyLocalizations.of(context)!.tr("hostname"),
+            ),
             onChanged: (text) {
               App().prefs.setString("hostname", text);
             },
@@ -148,7 +153,8 @@ class SettingsField extends StatelessWidget {
         TextFormField(
           initialValue: App().prefs.getString("token"),
           decoration: InputDecoration(
-              labelText: MyLocalizations.of(context)!.tr("token")),
+            labelText: MyLocalizations.of(context)!.tr("token"),
+          ),
           onChanged: (text) {
             App().prefs.setString("token", text);
           },

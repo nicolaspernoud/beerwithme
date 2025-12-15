@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/globals.dart';
-import 'package:frontend/i18n.dart';
-import 'package:frontend/main.dart';
+import 'package:beerwithme/globals.dart';
+import 'package:beerwithme/i18n.dart';
+import 'package:beerwithme/main.dart';
 
 Future<void> main() async {
   testWidgets('Basic app opening tests', (WidgetTester tester) async {
@@ -14,9 +14,7 @@ Future<void> main() async {
     await tester.pumpWidget(
       const MaterialApp(
         home: MyHomePage(title: 'Beer with me!'),
-        localizationsDelegates: [
-          MyLocalizationsDelegate(),
-        ],
+        localizationsDelegates: [MyLocalizationsDelegate()],
       ),
     );
 

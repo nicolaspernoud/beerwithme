@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/new_brand.dart';
-import 'package:frontend/models/brand.dart';
-import 'package:frontend/models/crud.dart';
+import 'package:beerwithme/components/new_brand.dart';
+import 'package:beerwithme/models/brand.dart';
+import 'package:beerwithme/models/crud.dart';
 
 import '../i18n.dart';
 
@@ -33,11 +33,9 @@ class BrandsState extends State<Brands> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(MyLocalizations.of(context)!.tr("brands")),
-        ),
-        body: Center(
-            child: Padding(
+      appBar: AppBar(title: Text(MyLocalizations.of(context)!.tr("brands"))),
+      body: Center(
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(
             children: [
@@ -51,23 +49,27 @@ class BrandsState extends State<Brands> {
                     ),
                   ),
                 ),
-                Row(children: <Widget>[
-                  const Icon(Icons.search),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: TextFormField(
-                        controller: searchController,
-                        onChanged: (text) {
-                          setState(() {});
-                        },
-                        decoration: InputDecoration(
-                            labelText:
-                                MyLocalizations.of(context)!.tr("search")),
+                Row(
+                  children: <Widget>[
+                    const Icon(Icons.search),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextFormField(
+                          controller: searchController,
+                          onChanged: (text) {
+                            setState(() {});
+                          },
+                          decoration: InputDecoration(
+                            labelText: MyLocalizations.of(
+                              context,
+                            )!.tr("search"),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
                 FutureBuilder<List<Brand>>(
                   future: brands,
                   builder: (context, snapshot) {
@@ -75,12 +77,15 @@ class BrandsState extends State<Brands> {
                       return Column(
                         children: [
                           ...snapshot.data!
-                              .where((element) => element.name
-                                  .toLowerCase()
-                                  .contains(
-                                      searchController.text.toLowerCase()))
-                              .map((a) => Card(
-                                      child: InkWell(
+                              .where(
+                                (element) =>
+                                    element.name.toLowerCase().contains(
+                                      searchController.text.toLowerCase(),
+                                    ),
+                              )
+                              .map(
+                                (a) => Card(
+                                  child: InkWell(
                                     splashColor: Colors.blue.withAlpha(30),
                                     onTap: () {
                                       Navigator.pop(context, a);
@@ -100,8 +105,9 @@ class BrandsState extends State<Brands> {
                                         ),
                                       ],
                                     ),
-                                  )))
-                              ,
+                                  ),
+                                ),
+                              ),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: IconButton(
@@ -109,7 +115,8 @@ class BrandsState extends State<Brands> {
                               color: Colors.blue,
                               onPressed: () {
                                 _editBrand(
-                                    Brand(id: 0, name: "", description: ""));
+                                  Brand(id: 0, name: "", description: ""),
+                                );
                               },
                             ),
                           ),
@@ -121,18 +128,24 @@ class BrandsState extends State<Brands> {
                     // By default, show a loading spinner.
                     return const Center(child: CircularProgressIndicator());
                   },
-                )
+                ),
               ],
             ],
           ),
-        )));
+        ),
+      ),
+    );
   }
 
   Future<void> _editBrand(Brand b) async {
-    var br = await Navigator.push(context,
-        MaterialPageRoute<Brand>(builder: (BuildContext context) {
-      return NewEditBrand(crud: APICrud<Brand>(), brand: b);
-    }));
+    var br = await Navigator.push(
+      context,
+      MaterialPageRoute<Brand>(
+        builder: (BuildContext context) {
+          return NewEditBrand(crud: APICrud<Brand>(), brand: b);
+        },
+      ),
+    );
     setState(() {
       searchController.text = br!.name;
       brands = widget.crud.read();

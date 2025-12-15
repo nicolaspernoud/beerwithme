@@ -12,7 +12,15 @@ Frontend is made with flutter.
 
 ## Upgrade guide
 
-- Upgrade flutter android directory (copy from a new flutter project)
+- Regenerate a clean flutter project (see below)
+- Upgrade versions in versions.env
 - Upgrade flutter dependencies in pubspec.yml
 - Upgrade Dockerfile and GitHub actions build.yml
-- Upgrade Rust cargo.yml dependencies
+- Upgrade Rust Cargo.toml dependencies
+
+### Regenerate the frontend
+
+```
+mv frontend frontend_old
+flutter create --template=app --platforms="android,web" --description="Beer with me!" --org="fr.ninico" --project-name="beerwithme" frontend
+```

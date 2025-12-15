@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/components/brands.dart';
-import 'package:frontend/models/brand.dart';
+import 'package:beerwithme/components/brands.dart';
+import 'package:beerwithme/models/brand.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:frontend/components/items.dart';
-import 'package:frontend/models/category.dart' as category;
-import 'package:frontend/models/crud.dart';
-import 'package:frontend/models/item.dart';
+import 'package:beerwithme/components/items.dart';
+import 'package:beerwithme/models/category.dart' as category;
+import 'package:beerwithme/models/crud.dart';
+import 'package:beerwithme/models/item.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as image;
 
@@ -23,12 +23,13 @@ class NewEditItem extends StatefulWidget {
   final Crud categoriesCrud;
   final Crud brandsCrud;
   final Item item;
-  const NewEditItem(
-      {super.key,
-      required this.crud,
-      required this.categoriesCrud,
-      required this.brandsCrud,
-      required this.item});
+  const NewEditItem({
+    super.key,
+    required this.crud,
+    required this.categoriesCrud,
+    required this.brandsCrud,
+    required this.item,
+  });
 
   @override
   NewEditItemState createState() => NewEditItemState();
@@ -64,9 +65,10 @@ class NewEditItemState extends State<NewEditItem> {
 
   Future<void> _imgFromCamera() async {
     final temp = await ImagePicker().pickImage(
-        source: ImageSource.camera,
-        imageQuality: JPG_IMAGE_QUALITY,
-        maxWidth: 1280);
+      source: ImageSource.camera,
+      imageQuality: JPG_IMAGE_QUALITY,
+      maxWidth: 1280,
+    );
     if (temp != null) {
       imageBytes = temp.readAsBytes();
       setState(() {});
@@ -76,8 +78,10 @@ class NewEditItemState extends State<NewEditItem> {
   static Future<Uint8List> bakeOrientation(Uint8List img) async {
     final capturedImage = image.decodeImage(img);
     final orientedImage = image.bakeOrientation(capturedImage!);
-    final encodedImage =
-        image.encodeJpg(orientedImage, quality: JPG_IMAGE_QUALITY);
+    final encodedImage = image.encodeJpg(
+      orientedImage,
+      quality: JPG_IMAGE_QUALITY,
+    );
     return encodedImage;
   }
 
@@ -89,9 +93,10 @@ class NewEditItemState extends State<NewEditItem> {
         img = await compute(bakeOrientation, img);
       }
       final response = await http.post(
-          Uri.parse('$hostname/items/photos/${id.toString()}'),
-          headers: <String, String>{'Authorization': "Bearer $token"},
-          body: img);
+        Uri.parse('$hostname/items/photos/${id.toString()}'),
+        headers: <String, String>{'Authorization': "Bearer $token"},
+        body: img,
+      );
       if (response.statusCode != 200) {
         throw Exception(response.body.toString());
       }
@@ -118,27 +123,32 @@ class NewEditItemState extends State<NewEditItem> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
-        appBar: AppBar(
-          title: isExisting
-              ? Text(MyLocalizations.of(context)!.tr("edit_item"))
-              : Text(MyLocalizations.of(context)!.tr("new_item")),
-          actions: (isExisting)
-              ? [
-                  IconButton(
-                      icon: const Icon(Icons.delete_forever),
-                      onPressed: () async {
-                        await widget.crud.delete(widget.item.id);
-                        if (!context.mounted) return;
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(MyLocalizations.of(context)!
-                                .tr("item_deleted"))));
-                      })
-                ]
-              : null,
-        ),
-        body: SingleChildScrollView(
-            child: Padding(
+      appBar: AppBar(
+        title: isExisting
+            ? Text(MyLocalizations.of(context)!.tr("edit_item"))
+            : Text(MyLocalizations.of(context)!.tr("new_item")),
+        actions: (isExisting)
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.delete_forever),
+                  onPressed: () async {
+                    await widget.crud.delete(widget.item.id);
+                    if (!context.mounted) return;
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          MyLocalizations.of(context)!.tr("item_deleted"),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ]
+            : null,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
@@ -148,12 +158,14 @@ class NewEditItemState extends State<NewEditItem> {
                 TextFormField(
                   maxLength: 75,
                   decoration: InputDecoration(
-                      labelText: MyLocalizations.of(context)!.tr("name")),
+                    labelText: MyLocalizations.of(context)!.tr("name"),
+                  ),
                   // The validator receives the text that the user has entered.
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return MyLocalizations.of(context)!
-                          .tr("please_enter_some_text");
+                      return MyLocalizations.of(
+                        context,
+                      )!.tr("please_enter_some_text");
                     }
                     return null;
                   },
@@ -165,12 +177,14 @@ class NewEditItemState extends State<NewEditItem> {
                 TextFormField(
                   initialValue: widget.item.alcohol.toString(),
                   decoration: InputDecoration(
-                      labelText:
-                          '${MyLocalizations.of(context)!.tr("alcohol")} (°)'),
+                    labelText:
+                        '${MyLocalizations.of(context)!.tr("alcohol")} (°)',
+                  ),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(
-                        RegExp(r'^(?:0|[1-9]{1}[0-9]{0,1})(?:\.[0-9]{0,1})?$'))
+                      RegExp(r'^(?:0|[1-9]{1}[0-9]{0,1})(?:\.[0-9]{0,1})?$'),
+                    ),
                   ],
                   onChanged: (text) {
                     var value = double.tryParse(text);
@@ -185,51 +199,56 @@ class NewEditItemState extends State<NewEditItem> {
                   initialIndex: widget.item.categoryId,
                 ),
                 Padding(
-                    padding: const EdgeInsets.only(bottom: 24),
-                    child: FutureBuilder<Brand>(
-                        future: selectedBrand,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Row(
-                              children: [
-                                SizedBox(
-                                    width: 65,
-                                    child: Text(MyLocalizations.of(context)!
-                                        .tr("brand"))),
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 24),
-                                    child: OutlinedButton(
-                                      child: Text(
-                                        snapshot.data!.name,
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                      onPressed: () async {
-                                        var b = await _openBrands(context);
-                                        if (b != null) {
-                                          selectedBrand =
-                                              Future<Brand>.value(b);
-                                          widget.item.brandId = b.id;
-                                          setState(() {});
-                                        }
-                                      },
-                                    )),
-                              ],
-                            );
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                                MyLocalizations.of(context)!.tr("no_brands")),
-                          );
-                        })),
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: FutureBuilder<Brand>(
+                    future: selectedBrand,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Row(
+                          children: [
+                            SizedBox(
+                              width: 65,
+                              child: Text(
+                                MyLocalizations.of(context)!.tr("brand"),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 24),
+                              child: OutlinedButton(
+                                child: Text(
+                                  snapshot.data!.name,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                onPressed: () async {
+                                  var b = await _openBrands(context);
+                                  if (b != null) {
+                                    selectedBrand = Future<Brand>.value(b);
+                                    widget.item.brandId = b.id;
+                                    setState(() {});
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          MyLocalizations.of(context)!.tr("no_brands"),
+                        ),
+                      );
+                    },
+                  ),
+                ),
                 Row(
                   children: [
                     Expanded(
                       child: TextFormField(
                         key: Key(widget.item.barcode),
                         decoration: InputDecoration(
-                            labelText:
-                                MyLocalizations.of(context)!.tr("barcode")),
+                          labelText: MyLocalizations.of(context)!.tr("barcode"),
+                        ),
                         initialValue: widget.item.barcode,
                         onChanged: (value) {
                           widget.item.barcode = value;
@@ -238,18 +257,20 @@ class NewEditItemState extends State<NewEditItem> {
                     ),
                     if (!kIsWeb)
                       IconButton(
-                          onPressed: () async {
-                            final code = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const BarcodeScanner()),
-                            );
-                            if (code != '-1') {
-                              widget.item.barcode = code;
-                              setState(() {});
-                            }
-                          },
-                          icon: const Icon(Icons.qr_code_scanner))
+                        onPressed: () async {
+                          final code = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BarcodeScanner(),
+                            ),
+                          );
+                          if (code != '-1') {
+                            widget.item.barcode = code;
+                            setState(() {});
+                          }
+                        },
+                        icon: const Icon(Icons.qr_code_scanner),
+                      ),
                   ],
                 ),
                 Padding(
@@ -257,13 +278,14 @@ class NewEditItemState extends State<NewEditItem> {
                   child: TextFormField(
                     maxLines: null,
                     decoration: InputDecoration(
-                        labelText:
-                            MyLocalizations.of(context)!.tr("description")),
+                      labelText: MyLocalizations.of(context)!.tr("description"),
+                    ),
                     // The validator receives the text that the user has entered.
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return MyLocalizations.of(context)!
-                            .tr("please_enter_some_text");
+                        return MyLocalizations.of(
+                          context,
+                        )!.tr("please_enter_some_text");
                       }
                       return null;
                     },
@@ -288,7 +310,7 @@ class NewEditItemState extends State<NewEditItem> {
                         color: Colors.amberAccent,
                         alterable: true,
                       ),
-                    )
+                    ),
                   ],
                 ),
                 Center(
@@ -304,36 +326,37 @@ class NewEditItemState extends State<NewEditItem> {
                                 _imgFromCamera();
                               },
                               child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  child: Image.memory(
-                                    snapshot.data!,
-                                    fit: BoxFit.fitWidth,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.75,
-                                  )),
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Image.memory(
+                                  snapshot.data!,
+                                  fit: BoxFit.fitWidth,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.75,
+                                ),
+                              ),
                             ),
                             IconButton(
-                                onPressed: () {
-                                  imageBytes = Future.value(null);
-                                  setState(() {});
-                                },
-                                icon: const Icon(Icons.clear))
+                              onPressed: () {
+                                imageBytes = Future.value(null);
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.clear),
+                            ),
                           ],
                         );
                       } else if (snapshot.hasError) {
                         return Text('${snapshot.error}');
                       }
                       return IconButton(
-                          onPressed: () {
-                            _imgFromCamera();
-                          },
-                          icon: const Icon(Icons.camera_alt));
+                        onPressed: () {
+                          _imgFromCamera();
+                        },
+                        icon: const Icon(Icons.camera_alt),
+                      );
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -360,23 +383,26 @@ class NewEditItemState extends State<NewEditItem> {
                                     if (_formKey.currentState!.validate()) {
                                       submitting = true;
                                       setState(() {});
-                                      var msg = MyLocalizations.of(context)!
-                                          .tr("item_created");
+                                      var msg = MyLocalizations.of(
+                                        context,
+                                      )!.tr("item_created");
                                       try {
                                         if (isExisting) {
                                           await widget.crud.update(widget.item);
                                           await _imgToServer(widget.item.id);
                                         } else {
-                                          var t = await widget.crud
-                                              .create(widget.item);
+                                          var t = await widget.crud.create(
+                                            widget.item,
+                                          );
                                           await _imgToServer(t.id);
                                         }
                                       } catch (e) {
                                         msg = e.toString();
                                       }
                                       if (!context.mounted) return;
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
                                         SnackBar(content: Text(msg)),
                                       );
                                       Navigator.pop(context);
@@ -384,12 +410,14 @@ class NewEditItemState extends State<NewEditItem> {
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
-                                    child: Text(MyLocalizations.of(context)!
-                                        .tr("submit")),
+                                    child: Text(
+                                      MyLocalizations.of(context)!.tr("submit"),
+                                    ),
                                   ),
                                 )
                               : const Center(
-                                  child: CircularProgressIndicator()),
+                                  child: CircularProgressIndicator(),
+                                ),
                         ),
                       ),
                     ),
@@ -399,7 +427,9 @@ class NewEditItemState extends State<NewEditItem> {
               ],
             ),
           ),
-        )));
+        ),
+      ),
+    );
   }
 }
 
@@ -434,63 +464,66 @@ class CategoriesDropDownState extends State<CategoriesDropDown> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<category.Category>>(
-        future: categories,
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            // Check that index exists
-            var minID = snapshot.data!.first.id;
-            var indexExists = false;
-            for (final e in snapshot.data!) {
-              if (e.id < minID) minID = e.id;
-              if (_index == e.id) {
-                indexExists = true;
-                break;
-              }
+      future: categories,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          // Check that index exists
+          var minID = snapshot.data!.first.id;
+          var indexExists = false;
+          for (final e in snapshot.data!) {
+            if (e.id < minID) minID = e.id;
+            if (_index == e.id) {
+              indexExists = true;
+              break;
             }
-            if (!indexExists) _index = minID;
-            widget.callback(_index);
-            return Row(
-              children: [
-                SizedBox(
-                    width: 65,
-                    child: Text(MyLocalizations.of(context)!.tr("category"))),
-                Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: DropdownButton<int>(
-                    value: _index,
-                    items: snapshot.data!.map((a) {
-                      return DropdownMenuItem<int>(
-                        value: a.id,
-                        child: Text(
-                          a.name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _index = value!;
-                      });
-                      widget.callback(value!);
-                    },
-                  ),
-                ),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
           }
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(MyLocalizations.of(context)!.tr("no_categories")),
+          if (!indexExists) _index = minID;
+          widget.callback(_index);
+          return Row(
+            children: [
+              SizedBox(
+                width: 65,
+                child: Text(MyLocalizations.of(context)!.tr("category")),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: DropdownButton<int>(
+                  value: _index,
+                  items: snapshot.data!.map((a) {
+                    return DropdownMenuItem<int>(
+                      value: a.id,
+                      child: Text(a.name, overflow: TextOverflow.ellipsis),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _index = value!;
+                    });
+                    widget.callback(value!);
+                  },
+                ),
+              ),
+            ],
           );
-        });
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(MyLocalizations.of(context)!.tr("no_categories")),
+        );
+      },
+    );
   }
 }
 
 Future<Brand?> _openBrands(BuildContext context) async {
-  return await Navigator.push(context,
-      MaterialPageRoute<Brand>(builder: (BuildContext context) {
-    return Brands(crud: APICrud<Brand>());
-  }));
+  return await Navigator.push(
+    context,
+    MaterialPageRoute<Brand>(
+      builder: (BuildContext context) {
+        return Brands(crud: APICrud<Brand>());
+      },
+    ),
+  );
 }

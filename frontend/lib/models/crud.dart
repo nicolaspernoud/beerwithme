@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:frontend/models/item.dart';
+import 'package:beerwithme/models/item.dart';
 
 import '../globals.dart';
 import 'brand.dart';
@@ -37,9 +37,7 @@ String routeByType(Type t) {
 }
 
 abstract class Serialisable {
-  Serialisable({
-    required this.id,
-  });
+  Serialisable({required this.id});
 
   fromJson(Map<String, dynamic> json) {}
   int id = 0;
@@ -80,7 +78,7 @@ class APICrud<T extends Serialisable> extends Crud<T> {
       Uri.parse('$base/$route'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': "Bearer $token"
+        'Authorization': "Bearer $token",
       },
       body: jsonEncode(val),
     );
@@ -97,7 +95,7 @@ class APICrud<T extends Serialisable> extends Crud<T> {
       Uri.parse('$base/$route/${id.toString()}'),
       headers: <String, String>{
         'Authorization': "Bearer $token",
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
     );
     if (response.statusCode == 200) {
@@ -130,7 +128,7 @@ class APICrud<T extends Serialisable> extends Crud<T> {
       Uri.parse('$base/$route/${val.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': "Bearer $token"
+        'Authorization': "Bearer $token",
       },
       body: jsonEncode(val),
     );
