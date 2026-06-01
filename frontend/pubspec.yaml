@@ -1,5 +1,5 @@
 name: beerwithme
-description: A beer ranking app
+description: "Beer with me!"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.4
+  sdk: ^3.12.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -33,10 +33,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   http: 1.6.0
-  image: 4.6.0
-  image_picker: 1.2.1
-  qr_code_scanner_plus: ^2.0.14
-  shared_preferences: 2.5.4
+  image: ^4.9.1
+  image_picker: ^1.2.2
+  qr_code_scanner_plus: 2.1.1
+  shared_preferences: ^2.5.5
   url_launcher: 6.3.2
 
 dev_dependencies:

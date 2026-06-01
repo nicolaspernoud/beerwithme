@@ -1,4 +1,4 @@
-use rand::{distr::Alphanumeric, rng, Rng};
+use rand::{distr::Alphanumeric, rng, RngExt};
 
 pub fn random_string() -> std::string::String {
     rng()
